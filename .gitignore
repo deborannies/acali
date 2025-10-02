@@ -1,4 +1,29 @@
+# Arquivos gerados pelo Composer
+# Esta pasta contém todas as dependências do projeto.
+# Ela é recriada executando "composer install".
+/vendor/
+
+# Arquivos de Ambiente
+# O arquivo .env contém configurações locais e segredos (como senhas de banco de dados).
+# NUNCA deve ser enviado para o Git.
+.env
+
+# Arquivos de Banco de Dados
+# Os dados da aplicação (os arquivos .txt) não devem fazer parte do controle de versão do código.
+# Isso evita que os dados de teste ou desenvolvimento de uma pessoa sobrescrevam os de outra.
+/database/*.txt
+
+# Cache e Logs
+# Ignora a pasta de cache do PHPUnit e outras pastas de cache/log que possam ser criadas.
+/.cache/
+/logs/
+
+# Arquivos de IDE e Editor de Código
+# Ignora configurações específicas do ambiente de desenvolvimento de cada pessoa.
 .vscode/
-.html/
-*.log/
-*.temp/
+.idea/
+
+# Arquivos do Sistema Operacional
+# Ignora arquivos gerados automaticamente pelo macOS, Windows ou Linux.
+.DS_Store
+Thumbs.db

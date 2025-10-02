@@ -1,25 +1,17 @@
 <?php
 
+namespace App\Models;
+
 class Project
 {
-    // 1. Alteramos o caminho para o arquivo do seu banco de dados
-    const DB_PATH = '/var/www/database/projects.txt';
+    // A constante DB_PATH foi removida daqui.
 
     private array $errors = [];
 
-    // O construtor permanece o mesmo, recebendo um título
     public function __construct(
         private string $title = '',
         private int $id = -1
     ) {
-    }
-
-    // Todos os métodos abaixo são idênticos ao do professor,
-    // pois a lógica de validação e salvamento é a mesma por enquanto.
-
-    public function setID(int $id)
-    {
-        $this->id = $id;
     }
 
     public function getId(): int
@@ -41,8 +33,9 @@ class Project
     {
         $this->errors = [];
 
-        if (empty($this->title))
+        if (empty($this->title)) {
             $this->errors['title'] = 'não pode ser vazio!';
+        }
 
         return empty($this->errors);
     }
@@ -64,24 +57,37 @@ class Project
     public function save(): bool
     {
         if ($this->isValid()) {
-            if ($this->isNewRecord()) {
-                // Lógica para CRIAR um novo registro (adiciona no final do arquivo)
-                $this->id = count(file(self::DB_PATH));
-                file_put_contents(self::DB_PATH, $this->title . PHP_EOL, FILE_APPEND);
+            if ($this->isNewRecord()) { 
+                $this->id = file_exists(self::DB_PATH()) ? count(file(self::DB_PATH())) : 0;
+                file_put_contents(self::DB_PATH(), $this->title . PHP_EOL, FILE_APPEND);
             } else {
-                // Lógica para ATUALIZAR um registro existente
-                $projects = file(self::DB_PATH, FILE_IGNORE_NEW_LINES);
+                $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES);
                 $projects[$this->id] = $this->title;
 
                 $data = implode(PHP_EOL, $projects);
-                file_put_contents(self::DB_PATH, $data . PHP_EOL);
+                file_put_contents(self::DB_PATH(), $data . PHP_EOL);
             }
+
             return true;
         }
 
         return false;
     }
-    
+
+    public function destroy()
+    {
+        $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES); // Modificado
+        unset($projects[$this->id]);
+
+        $data = implode(PHP_EOL, $projects);
+        
+        if (!empty($projects)) {
+            $data .= PHP_EOL;
+        }
+        
+        file_put_contents(self::DB_PATH(), $data); // Modificado
+    }
+
     private function isNewRecord(): bool
     {
         return $this->id === -1;
@@ -89,36 +95,28 @@ class Project
 
     public static function all(): array
     {
-        $projects = file(self::DB_PATH, FILE_IGNORE_NEW_LINES);
+        $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES); // Modificado
 
         return array_map(function ($line, $title) {
             return new Project(id: $line, title: $title);
         }, array_keys($projects), $projects);
     }
 
-    public static function findById(int $id): Project|null
+    public static function findById(int $id): ?Project
     {
         $projects = self::all();
 
         foreach ($projects as $project) {
-            if ($project->getId() === $id)
+            if ($project->getId() === $id) {
                 return $project;
+            }
         }
         return null;
     }
 
-    public function destroy()
+    // Método adicionado para buscar o caminho do DB dinamicamente
+    private static function DB_PATH()
     {
-        $projects = file(self::DB_PATH, FILE_IGNORE_NEW_LINES);
-        unset($projects[$this->id]);
-
-        $data = implode(PHP_EOL, $projects);
-        
-        // Adiciona uma quebra de linha no final, se o arquivo não estiver vazio
-        if (!empty($projects)) {
-            $data .= PHP_EOL;
-        }
-        
-        file_put_contents(self::DB_PATH, $data);
+        return '/var/www/database/' . $_ENV['DB_NAME'];
     }
 }

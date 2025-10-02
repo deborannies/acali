@@ -1,5 +1,7 @@
 <?php
-require '/var/www/app/controllers/ProjectsController.php';
+require '/var/www/config/bootstrap.php';
+
+use App\Controllers\ProjectsController;
 
 $controller = new ProjectsController();
 $controller->update();
