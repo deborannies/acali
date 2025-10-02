@@ -1,5 +1,6 @@
 <?php
-require '/var/www/app/models/Project.php';
+namespace App\Controllers;
+use App\Models\Project;
 
 class ProjectsController
 {
