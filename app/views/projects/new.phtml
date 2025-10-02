@@ -1,8 +1,8 @@
-<form action="create.php" method="POST" class="<?= empty($errors) ? '' : 'was-validated' ?>" novalidate>
-    <div class="mb-3" >
-        <label for="problem_title" class="form-label">Título:</label>
-        <input type="text" name="project[title]" class="form-control" id="problem_title" required>
-        <div class="invalid-feedback"><?= isset($errors['title']) ? $errors['title'] : '' ?></div>
+<form action="create.php" method="POST" class="<?= empty($project->hasErrors()) ? '' : 'was-validated' ?>" novalidate>
+    <div class="mb-3">
+        <label for="project_title" class="form-label">Título:</label>
+        <input type="text" name="project[title]" class="form-control" id="project_title" required>
+        <div class="invalid-feedback"><?= $project->errors('title') ? $project->errors('title') : '' ?></div>
     </div>
 
     <button type="submit" class="btn btn-primary">Registrar</button>
