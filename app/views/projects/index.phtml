@@ -1,0 +1,41 @@
+<!-- O Bootstrap Grid System (row) será nosso container principal para os cards -->
+<div class="row">
+
+    <?php foreach ($projects as $index => $project): ?>
+        <!-- Cada projeto será uma coluna. Em telas médias (md) caberão 3 cards por linha -->
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 project-card">
+                <div class="card-body text-center d-flex flex-column">
+                    <!-- Ícone de pasta (usando Bootstrap Icons) -->
+                    <i class="bi bi-folder2-open fs-1 text-secondary mb-3"></i>
+
+                    <!-- Título do Projeto -->
+                    <h5 class="card-title mt-auto pt-2">
+                        <?= htmlspecialchars($project) ?>
+                    </h5>
+                    
+                    <!-- Links de Ação -->
+                    <div class="mt-3">
+                        <a href="/pages/projects/edit.php?id=<?= $index ?>" class="card-link text-decoration-none small">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+                        <a href="/pages/projects/delete.php?id=<?= $index ?>" class="card-link text-decoration-none small text-danger">
+                            <i class="bi bi-trash"></i> Excluir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+    <!-- Card especial para Adicionar Novo Projeto -->
+    <div class="col-12 col-md-6 col-lg-4 mb-4">
+        <a href="/pages/projects/new.php" class="card h-100 card-add-new text-decoration-none">
+            <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+                <i class="bi bi-plus-circle-dotted fs-1 text-secondary mb-2"></i>
+                <h5 class="card-title text-secondary">Cadastrar Projeto</h5>
+            </div>
+        </a>
+    </div>
+
+</div>
