@@ -5,8 +5,7 @@ namespace Tests\Unit\Models;
 use App\Models\Project;
 use Tests\TestCase;
 
-
-class ProjectTest extends TestCase 
+class ProjectTest extends TestCase
 {
     public function test_can_set_title(): void
     {

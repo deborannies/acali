@@ -15,7 +15,7 @@ function down {
 }
 
 function composer {
-  docker run --rm --interactive --tty \
+  docker run --rm --interactive \
     -e COMPOSER_CACHE_DIR="/app/.cache/composer" \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/app" \
@@ -54,5 +54,6 @@ function phpstan {
   docker compose run --rm php ./vendor/bin/phpstan ${TEST_PATH}
 }
 
-TIMEFORMAT=$'\nTask completed in %3lR'
-time "${@}"
+function git:clean:branches {
+  git branch | grep -v '\*\|master\|main\|develop\|production' | xargs -n 1 git branch -D
+}
