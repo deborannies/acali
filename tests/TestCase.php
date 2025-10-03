@@ -2,11 +2,8 @@
 
 namespace Tests;
 
+use Core\Constants\Constants;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
-
-// Carrega as constantes e funções necessárias para os testes
-require_once dirname(__DIR__) . '/core/constants/general.php';
-require_once ROOT_PATH . '/core/env/env.php';
 
 class TestCase extends FrameworkTestCase
 {
@@ -22,8 +19,7 @@ class TestCase extends FrameworkTestCase
 
     private function clearDatabase()
     {
-        // Usa as novas constantes para encontrar o arquivo de BD de teste
-        $file = DATABASE_PATH . $_ENV['DB_NAME'];
+        $file = Constants::databasePath()->join($_ENV['DB_NAME']);
         if (file_exists($file)) {
             unlink($file);
         }

@@ -6,7 +6,6 @@ use Tests\TestCase;
 
 abstract class ControllerTestCase extends TestCase
 {
-    
     public function get(string $action, string $controller): string
     {
         $controllerInstance = new $controller();

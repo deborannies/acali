@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Controllers;
+
 use App\Models\Project;
 
 class ProjectsController
@@ -31,7 +33,9 @@ class ProjectsController
     public function create()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        if ($method !== 'POST') $this->redirectTo('/pages/projects');
+        if ($method !== 'POST') {
+            $this->redirectTo('/pages/projects');
+        }
 
         $params = $_POST['project'];
         $project = new Project($params['title']);
@@ -55,7 +59,9 @@ class ProjectsController
     public function update()
     {
         $method = $_REQUEST['_method'] ?? $_SERVER['REQUEST_METHOD'];
-        if ($method !== 'PUT') $this->redirectTo('/pages/projects');
+        if ($method !== 'PUT') {
+            $this->redirectTo('/pages/projects');
+        }
 
         $params = $_POST['project'];
         $project = Project::findById($params['id']);
@@ -73,7 +79,7 @@ class ProjectsController
     {
         // 1. Pega o ID que vem da URL (via GET)
         $id = intval($_GET['id']);
-        
+
         // 2. Encontra o projeto
         $project = Project::findById($id);
 

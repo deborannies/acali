@@ -3,7 +3,9 @@
 namespace Tests\Unit\Models;
 
 use App\Models\Project;
-use Tests\TestCase; // Alterado
+use Tests\TestCase;
+
+// Alterado
 
 class ProjectTest extends TestCase // Alterado
 {
