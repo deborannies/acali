@@ -54,3 +54,6 @@ function phpstan {
   docker compose run --rm php ./vendor/bin/phpstan ${TEST_PATH}
 }
 
+function git:clean:branches {
+  git branch | grep -v '\*\|master\|main\|develop\|production' | xargs -n 1 git branch -D
+}
