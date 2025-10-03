@@ -2,9 +2,11 @@
 
 namespace Core\Errors;
 
+use Throwable;
+
 class ErrorsHandler
 {
-    public static function init()
+    public static function init(): void
     {
         new self();
     }
@@ -16,7 +18,10 @@ class ErrorsHandler
         set_error_handler([$this, 'errorHandler']);
     }
 
-    public function exceptionHandler($e)
+    /**
+     * @param Throwable $e
+     */
+    public function exceptionHandler(Throwable $e): void
     {
         ob_end_clean();
         header('HTTP/1.1 500 Internal Server Error');
@@ -34,7 +39,13 @@ class ErrorsHandler
         HTML;
     }
 
-    public function errorHandler($errorNumber, $errorStr, $file, $line)
+    /**
+     * @param int    $errorNumber
+     * @param string $errorStr
+     * @param string $file
+     * @param int    $line
+     */
+    public function errorHandler(int $errorNumber, string $errorStr, string $file, int $line): bool
     {
         ob_end_clean();
         header('HTTP/1.1 500 Internal Server Error');
@@ -68,6 +79,6 @@ class ErrorsHandler
         debug_print_backtrace();
         echo '</pre>';
 
-        exit();
+        return true;
     }
 }
