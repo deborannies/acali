@@ -1,9 +1,10 @@
 <?php
 
-// Este script lê o arquivo .env na raiz do projeto...
-$envs = parse_ini_file('/var/www/.env');
+$envs = parse_ini_file(ROOT_PATH . '/.env');
 
-// ...e carrega cada variável na superglobal $_ENV.
 foreach ($envs as $key => $value) {
-    $_ENV[$key] = $value;
+
+    if (!isset($_ENV[$key])) {
+        $_ENV[$key] = $value;
+    }
 }

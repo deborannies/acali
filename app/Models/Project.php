@@ -55,7 +55,11 @@ class Project
     public function save(): bool
     {
         if ($this->isValid()) {
-            if ($this->isNewRecord()) { 
+            if (!is_dir(DATABASE_PATH)) {
+                mkdir(DATABASE_PATH, 0777, true);
+            }
+
+            if ($this->isNewRecord()) {
                 $this->id = file_exists(self::DB_PATH()) ? count(file(self::DB_PATH())) : 0;
                 file_put_contents(self::DB_PATH(), $this->title . PHP_EOL, FILE_APPEND);
             } else {
@@ -93,6 +97,10 @@ class Project
 
     public static function all(): array
     {
+        if (!file_exists(self::DB_PATH())) {
+            return [];
+        }
+
         $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES);
 
         return array_map(function ($line, $title) {
