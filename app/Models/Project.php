@@ -90,8 +90,8 @@ class Project
         return $this->id === -1;
     }
 
-     /** 
-      * @return array<int, Project> 
+     /**
+      * @return array<int, Project>
      */
     public static function all(): array
     {
