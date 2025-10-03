@@ -7,7 +7,6 @@ use App\Models\Project;
 
 class ProjectsControllerTest extends ControllerTestCase
 {
-
     public function test_list_all_projects()
     {
         $project1 = new Project(title: 'Projeto TCC ACALI');
@@ -17,7 +16,7 @@ class ProjectsControllerTest extends ControllerTestCase
 
         $response = $this->get(action: 'index', controller: ProjectsController::class);
 
-       
+
         $this->assertMatchesRegularExpression("/{$project1->getTitle()}/", $response);
         $this->assertMatchesRegularExpression("/{$project2->getTitle()}/", $response);
     }
