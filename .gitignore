@@ -27,3 +27,5 @@
 # Ignora arquivos gerados automaticamente pelo macOS, Windows ou Linux.
 .DS_Store
 Thumbs.db
+vendor/
+cache/

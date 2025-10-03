@@ -17,15 +17,6 @@ services:
       - ./:/var/www
     networks:
       - app-network
-    
-  composer:
-    image: composer:2.7.2
-    user: "33:33"
-    environment:
-      - COMPOSER_CACHE_DIR=/app/cache/composer
-    volumes:
-      - .:/app
-    working_dir: /app
 
 networks:
   app-network:
