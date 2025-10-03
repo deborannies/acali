@@ -7,7 +7,7 @@ use App\Models\Project;
 
 class ProjectsControllerTest extends ControllerTestCase
 {
-    public function test_list_all_projects()
+    public function test_list_all_projects(): void
     {
         $project1 = new Project(title: 'Projeto TCC ACALI');
         $project2 = new Project(title: 'Pesquisa sobre IA');
