@@ -4,8 +4,6 @@ namespace App\Models;
 
 class Project
 {
-    // A constante DB_PATH foi removida daqui.
-
     private array $errors = [];
 
     public function __construct(
@@ -76,7 +74,7 @@ class Project
 
     public function destroy()
     {
-        $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES); // Modificado
+        $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES); 
         unset($projects[$this->id]);
 
         $data = implode(PHP_EOL, $projects);
@@ -85,7 +83,7 @@ class Project
             $data .= PHP_EOL;
         }
         
-        file_put_contents(self::DB_PATH(), $data); // Modificado
+        file_put_contents(self::DB_PATH(), $data); 
     }
 
     private function isNewRecord(): bool
@@ -95,7 +93,7 @@ class Project
 
     public static function all(): array
     {
-        $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES); // Modificado
+        $projects = file(self::DB_PATH(), FILE_IGNORE_NEW_LINES);
 
         return array_map(function ($line, $title) {
             return new Project(id: $line, title: $title);
@@ -114,9 +112,8 @@ class Project
         return null;
     }
 
-    // Método adicionado para buscar o caminho do DB dinamicamente
     private static function DB_PATH()
     {
-        return '/var/www/database/' . $_ENV['DB_NAME'];
+        return DATABASE_PATH . $_ENV['DB_NAME'];
     }
 }
