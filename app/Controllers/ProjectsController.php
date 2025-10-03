@@ -8,14 +8,14 @@ class ProjectsController
 {
     private string $layout = 'application';
 
-    public function index()
+    public function index(): void
     {
         $projects = Project::all();
         $title = 'Projetos Cadastrados';
         $this->render('index', compact('projects', 'title'));
     }
 
-    public function show()
+    public function show(): void
     {
         $id = intval($_GET['id']);
         $project = Project::findById($id);
@@ -23,14 +23,14 @@ class ProjectsController
         $this->render('show', compact('project', 'title'));
     }
 
-    public function new()
+    public function new(): void
     {
         $project = new Project();
         $title = 'Novo Projeto';
         $this->render('new', compact('project', 'title'));
     }
 
-    public function create()
+    public function create(): void
     {
         $method = $_SERVER['REQUEST_METHOD'];
         if ($method !== 'POST') {
@@ -48,7 +48,7 @@ class ProjectsController
         }
     }
 
-    public function edit()
+    public function edit(): void
     {
         $id = intval($_GET['id']);
         $project = Project::findById($id);
@@ -56,7 +56,7 @@ class ProjectsController
         $this->render('edit', compact('project', 'title'));
     }
 
-    public function update()
+    public function update(): void
     {
         $method = $_REQUEST['_method'] ?? $_SERVER['REQUEST_METHOD'];
         if ($method !== 'PUT') {
@@ -75,32 +75,31 @@ class ProjectsController
         }
     }
 
-    public function destroy()
+    public function destroy(): void
     {
-        // 1. Pega o ID que vem da URL (via GET)
         $id = intval($_GET['id']);
 
-        // 2. Encontra o projeto
         $project = Project::findById($id);
 
-        // 3. Se o projeto existir, apaga
         if ($project) {
             $project->destroy();
         }
 
-        // 4. Redireciona de volta para a lista
         $this->redirectTo('/pages/projects');
     }
 
-    private function render($view, $data = [])
+/**
+ * @param array<string, mixed> $data
+ */
+
+    private function render(string $view, array $data = []): void
     {
         extract($data);
-        // Caminho para as views de PROJETOS
         $view = '/var/www/app/views/projects/' . $view . '.phtml';
         require '/var/www/app/views/layouts/' . $this->layout . '.phtml';
     }
 
-    private function redirectTo($location)
+    private function redirectTo(string $location): void
     {
         header('Location: ' . $location);
         exit;
