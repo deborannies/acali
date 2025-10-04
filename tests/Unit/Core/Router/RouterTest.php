@@ -2,12 +2,27 @@
 
 namespace Tests\Unit\Core\Router;
 
+use Core\Constants\Constants;
 use Core\Router\Route;
 use Core\Router\Router;
 use Tests\TestCase;
+use Tests\Unit\Core\Router\MockController;
 
 class RouterTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        require_once Constants::rootPath()->join('tests/Unit/Core/Http/header_mock.php');
+    }
+
+    public function tearDown(): void
+    {
+        $routerReflection = new \ReflectionClass(Router::class);
+        $instanceProperty = $routerReflection->getProperty('instance');
+        $instanceProperty->setValue(null, null);
+    }
+
     public function test_get_singleton_should_return_the_same_object(): void
     {
         $rOne = Router::getInstance();
@@ -68,6 +83,19 @@ class RouterTest extends TestCase
 
         $this->assertEquals('/test', $router->getRoutePathByName('test'));
         $this->assertEquals('/test-1', $router->getRoutePathByName('test.one'));
+    }
+
+    public function test_should_get_route_path_by_name_with_params(): void
+    {
+        $router = Router::getInstance();
+        $router->addRoute(new Route('GET', '/test/{id}', MockController::class, 'action'))->name('test');
+
+        $router->addRoute(
+            new Route('GET', '/test/{user_id}/test-1/{id}', MockController::class, 'action')
+        )->name('test.one');
+
+        $this->assertEquals('/test/1', $router->getRoutePathByName('test', ['id' => 1]));
+        $this->assertEquals('/test/1/test-1/2', $router->getRoutePathByName('test.one', ['id' => 2, 'user_id' => 1]));
     }
 
     public function test_should_return_an_exception_if_the_name_does_not_exist(): void

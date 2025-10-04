@@ -2,18 +2,17 @@
 
 namespace Tests\Unit\Controllers;
 
+use Core\Http\Request;
 use Tests\TestCase;
 
 abstract class ControllerTestCase extends TestCase
 {
-    public function get(string $action, string $controller): string
+    protected function get(string $action, string $controller): string|false
     {
-        $controllerInstance = new $controller();
         ob_start();
-        $controllerInstance->$action();
-        $response = ob_get_contents();
-        ob_end_clean();
-
-        return $response;
+        $controllerInstance = new $controller();
+        $request = new Request();
+        $controllerInstance->$action($request);
+        return ob_get_clean();
     }
 }

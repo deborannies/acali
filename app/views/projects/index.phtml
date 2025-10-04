@@ -1,11 +1,11 @@
 <div class="row">
 
-    <?php foreach ($projects as $index => $project): ?>
+    <?php foreach ($projects as $project): ?>
         <div class="col-12 col-md-6 col-lg-4 mb-4">
             <div class="card h-100 project-card">
                 <div class="card-body text-center d-flex flex-column">
 
-                    <a href="/pages/projects/show.php?id=<?= $project->getId() ?>" class="text-decoration-none text-dark stretched-link">
+                    <a href="<?= route('projects.show', ['id' => $project->getId()]) ?>" class="text-decoration-none text-dark stretched-link">
                         <i class="bi bi-folder2-open fs-1 text-secondary mb-3"></i>
                         <h5 class="card-title mt-auto pt-2">
                             <?= htmlspecialchars($project->getTitle()) ?>
@@ -13,12 +13,16 @@
                     </a>
                     
                     <div class="mt-3" style="position: relative; z-index: 1;">
-                        <a href="/pages/projects/edit.php?id=<?= $index ?>" class="card-link text-decoration-none small">
+                        <a href="<?= route('projects.edit', ['id' => $project->getId()]) ?>" class="card-link text-decoration-none small">
                             <i class="bi bi-pencil-square"></i> Editar
                         </a>
-                        <a href="/pages/projects/delete.php?id=<?= $index ?>" class="card-link text-decoration-none small text-danger">
-                            <i class="bi bi-trash"></i> Excluir
-                        </a>
+                        
+                        <form action="<?= route('projects.destroy', ['id' => $project->getId()]) ?>" method="POST" class="d-inline">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="card-link text-decoration-none small text-danger btn btn-link p-0">
+                                <i class="bi bi-trash"></i> Excluir
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

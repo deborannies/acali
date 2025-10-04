@@ -1,6 +1,5 @@
-<form action="update.php" method="POST" class="<?= empty($project->hasErrors()) ? '' : 'was-validated' ?>" novalidate>
+<form action="<?= route('projects.update', ['id' => $project->getId()]) ?>" method="POST" class="<?= empty($project->hasErrors()) ? '' : 'was-validated' ?>" novalidate>
     <input type="hidden" name="_method" value="PUT">
-    <input type="hidden" name="project[id]" value="<?= $project->getId() ?>">
 
     <div class="mb-3">
         <label for="project_title" class="form-label">Título:</label>
