@@ -4,7 +4,7 @@ namespace Core\Router;
 
 use Core\Constants\Constants;
 use Core\Http\Request;
-use Exception;
+use Core\Exceptions\HTTPException;
 
 class Router
 {
@@ -51,7 +51,7 @@ class Router
             }
         }
 
-        throw new Exception("Route with name {$name} not found", 500);
+        throw new \Exception("Route with name {$name} not found", 500);
     }
 
     /**
@@ -87,6 +87,7 @@ class Router
         foreach ($this->routes as $route) {
             if ($route->match($request)) {
                 $class = $route->getControllerName();
+                // A CORREÇÃO DO ERRO DE DIGITAÇÃO ESTÁ AQUI
                 $action = $route->getActionName();
 
                 $controller = new $class();
@@ -96,12 +97,11 @@ class Router
             }
         }
 
-        return false;
+        return throw new HTTPException('URI ' . $request->getUri() . ' not found.', 404);
     }
 
     public static function init(): void
     {
         require Constants::rootPath()->join('config/routes.php');
-        self::getInstance()->dispatch();
     }
 }
