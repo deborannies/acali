@@ -1,9 +1,7 @@
 <?php
 
-phpinfo();
+use Core\Router\Router;
 
-// use Core\Router\Router;
-
-// require __DIR__ . '/../config/bootstrap.php';
-// Router::init();
-// Router::getInstance()->dispatch();
+require __DIR__ . '/../config/bootstrap.php';
+Router::init();
+Router::getInstance()->dispatch();

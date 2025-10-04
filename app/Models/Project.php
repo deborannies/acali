@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Core\Constants\Constants;
+use Core\Database\Database;
 
 class Project
 {
@@ -55,34 +55,38 @@ class Project
     public function save(): bool
     {
         if ($this->isValid()) {
-            $databasePath = Constants::databasePath();
-            if (!is_dir((string)$databasePath)) {
-                mkdir((string)$databasePath, 0777, true);
-            }
+            $pdo = Database::getDatabaseConn();
 
             if ($this->isNewRecord()) {
-                $this->id = file_exists(self::dbPath()) ? count(file(self::dbPath())) : 0;
-                file_put_contents(self::dbPath(), $this->title . PHP_EOL, FILE_APPEND);
+                $sql = 'INSERT INTO projects (title) VALUES (:title);';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':title', $this->title);
+                $stmt->execute();
+
+                $this->id = (int) $pdo->lastInsertId();
             } else {
-                $projects = file(self::dbPath(), FILE_IGNORE_NEW_LINES);
-                $projects[$this->id] = $this->title;
-                $data = implode(PHP_EOL, $projects);
-                file_put_contents(self::dbPath(), $data . PHP_EOL);
+                $sql = 'UPDATE projects SET title = :title WHERE id = :id;';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':title', $this->title);
+                $stmt->bindParam(':id', $this->id);
+                $stmt->execute();
             }
+
             return true;
         }
         return false;
     }
 
-    public function destroy(): void
+    public function destroy(): bool
     {
-        $projects = file(self::dbPath(), FILE_IGNORE_NEW_LINES);
-        unset($projects[$this->id]);
-        $data = implode(PHP_EOL, $projects);
-        if (!empty($projects)) {
-            $data .= PHP_EOL;
-        }
-        file_put_contents(self::dbPath(), $data);
+        $pdo = Database::getDatabaseConn();
+
+        $sql = 'DELETE FROM projects WHERE id = :id;';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id', $this->id);
+        $stmt->execute();
+
+        return ($stmt->rowCount() !== 0);
     }
 
     private function isNewRecord(): bool
@@ -95,28 +99,32 @@ class Project
      */
     public static function all(): array
     {
-        if (!file_exists(self::dbPath())) {
-            return [];
+        $projects = [];
+        $pdo = Database::getDatabaseConn();
+        $resp = $pdo->query('SELECT id, title FROM projects;');
+
+        foreach ($resp as $row) {
+            $projects[] = new Project(id: $row['id'], title: $row['title']);
         }
-        $projects = file(self::dbPath(), FILE_IGNORE_NEW_LINES);
-        return array_map(function ($line, $title) {
-            return new Project(id: $line, title: $title);
-        }, array_keys($projects), $projects);
+
+        return $projects;
     }
 
     public static function findById(int $id): ?Project
     {
-        $projects = self::all();
-        foreach ($projects as $project) {
-            if ($project->getId() === $id) {
-                return $project;
-            }
-        }
-        return null;
-    }
+        $pdo = Database::getDatabaseConn();
 
-    private static function dbPath(): string
-    {
-        return Constants::databasePath()->join($_ENV['DB_NAME']);
+        $sql = 'SELECT id, title FROM projects WHERE id = :id;';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+
+        if ($stmt->rowCount() === 0) {
+            return null;
+        }
+
+        $row = $stmt->fetch();
+
+        return new Project(id: $row['id'], title: $row['title']);
     }
 }

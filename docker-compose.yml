@@ -29,6 +29,8 @@ services:
       MYSQL_USER: "$DB_USERNAME"
       MYSQL_PASSWORD: "$DB_PASSWORD"
       MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    networks:
+      - app-network
 
 networks:
   app-network:
