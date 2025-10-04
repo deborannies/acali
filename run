@@ -50,10 +50,17 @@ function phpcbf {
 }
 
 function phpstan {
-  TEST_PATH="${@:-.}"
+  TEST_PATH="${@:-}"
   docker compose run --rm php ./vendor/bin/phpstan ${TEST_PATH}
 }
 
 function git:clean:branches {
   git branch | grep -v '\*\|master\|main\|develop\|production' | xargs -n 1 git branch -D
 }
+
+COMMAND=$1
+shift
+
+TIMEFORMAT=$'\n✅ Task completed in %3lR'
+
+time ${COMMAND} "${@}"
