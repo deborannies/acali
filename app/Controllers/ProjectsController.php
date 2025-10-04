@@ -87,7 +87,7 @@ class ProjectsController
         $view = '/var/www/app/views/projects/' . $view . '.phtml';
         require '/var/www/app/views/layouts/' . $this->layout . '.phtml';
     }
-    
+
     /**
      * @param array<string, mixed> $params
      */
