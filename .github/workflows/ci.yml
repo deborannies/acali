@@ -21,6 +21,11 @@ jobs:
       - name: Start services
         run: ./run up -d
 
+      # --- ALTERAÇÃO APLICADA ---
+      # Adiciona uma pausa para garantir que o DB esteja pronto
+      - name: Wait for database
+        run: sleep 15
+
       - name: PHPUnit
         run: ./run test
 
@@ -39,6 +44,11 @@ jobs:
 
       - name: Start services
         run: ./run up -d
+
+      # --- ALTERAÇÃO APLICADA ---
+      # Adiciona uma pausa aqui também por segurança
+      - name: Wait for database
+        run: sleep 15
 
       - name: PSR-4 Checker
         run: ./run composer dump-autoload --optimize --strict-psr
