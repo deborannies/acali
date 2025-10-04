@@ -1,4 +1,3 @@
-<!-- O Bootstrap Grid System (row) será nosso container principal para os cards -->
 <div class="row">
 
     <?php foreach ($projects as $index => $project): ?>
@@ -26,9 +25,8 @@
         </div>
     <?php endforeach; ?>
 
-    <!-- Card especial para Adicionar Novo Projeto -->
     <div class="col-12 col-md-6 col-lg-4 mb-4">
-        <a href="/pages/projects/new.php" class="card h-100 card-add-new text-decoration-none">
+        <a href="<?= route('projects.new') ?>" class="card h-100 card-add-new text-decoration-none">
             <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
                 <i class="bi bi-plus-circle-dotted fs-1 text-secondary mb-2"></i>
                 <h5 class="card-title text-secondary">Cadastrar Projeto</h5>
