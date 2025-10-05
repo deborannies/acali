@@ -6,15 +6,21 @@ use App\Models\Project;
 
 class ProjectsPopulate
 {
-    public static function populate()
+    public static function populate(): void
     {
-        $numberOfProjects = 100;
+        $projects = [
+            'Sistema de Gestão Acadêmica',
+            'Plataforma de Estágios',
+            'CRUD Virtualizado',
+            'Críticas de Filmes',
+        ];
 
-        for ($i = 1; $i <= $numberOfProjects; $i++) {
-            $project = new Project(title: 'Project ' . $i);
+        foreach ($projects as $title) {
+            $project = new Project();
+            $project->setTitle($title);
             $project->save();
         }
 
-        echo "Projects populated with $numberOfProjects registers\n";
+        echo "✅ Projetos de teste criados com sucesso!\n";
     }
 }

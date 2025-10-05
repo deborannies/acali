@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\ProjectsController;
+use App\Controllers\AuthenticationsController;
 use Core\Router\Route;
 
 // Create
@@ -18,3 +19,13 @@ Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('proje
 
 // Delete
 Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+
+// Authentication
+// Rota para MOSTRAR o formulário de login
+Route::get('/login', [AuthenticationsController::class, 'new'])->name('login.form');
+
+// Rota para PROCESSAR a tentativa de login
+Route::post('/login', [AuthenticationsController::class, 'authenticate'])->name('login.authenticate');
+
+// Rota para SAIR do sistema (logout)
+Route::get('/logout', [AuthenticationsController::class, 'destroy'])->name('logout');
