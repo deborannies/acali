@@ -1,4 +1,3 @@
--- Remove tabelas antigas se existirem
 DROP TABLE IF EXISTS `projects`;
 DROP TABLE IF EXISTS `users`;
 
@@ -12,7 +11,7 @@ CREATE TABLE `users` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Criação da tabela de projetos (SIMPLES, compatível com seu código)
+-- Criação da tabela de projetos
 CREATE TABLE `projects` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `title` VARCHAR(255) NOT NULL

@@ -59,7 +59,6 @@ class Route
 
     private function isSameUri(Request $request): bool
     {
-        // Remove query params (ex: ?page=2) da URI da requisição antes de comparar
         $uri = strtok($request->getUri(), '?');
 
         $splittedRoute = explode('/', $this->getUri());

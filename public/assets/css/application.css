@@ -1,7 +1,6 @@
-/* Estilo geral para os cards de projeto */
 .project-card {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    border: 1px solid #e9ecef; /* Borda um pouco mais suave */
+    border: 1px solid #e9ecef;
 }
 
 .project-card:hover {
@@ -9,9 +8,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilo para o card de adicionar novo projeto */
 .card-add-new {
-    border: 2px dashed #d8dde2; /* Borda tracejada */
+    border: 2px dashed #d8dde2;
     background-color: #f8f9fa;
     transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }

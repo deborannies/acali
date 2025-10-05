@@ -21,8 +21,6 @@ jobs:
       - name: Start services
         run: ./run up -d
 
-      # --- ALTERAÇÃO APLICADA ---
-      # Adiciona uma pausa para garantir que o DB esteja pronto
       - name: Wait for database
         run: sleep 15
 
@@ -45,8 +43,6 @@ jobs:
       - name: Start services
         run: ./run up -d
 
-      # --- ALTERAÇÃO APLICADA ---
-      # Adiciona uma pausa aqui também por segurança
       - name: Wait for database
         run: sleep 15
 
@@ -57,4 +53,5 @@ jobs:
         run: ./run phpcs
 
       - name: PHPStan
+        
         run: ./run phpstan

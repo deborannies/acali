@@ -87,7 +87,6 @@ class Router
         foreach ($this->routes as $route) {
             if ($route->match($request)) {
                 $class = $route->getControllerName();
-                // A CORREÇÃO DO ERRO DE DIGITAÇÃO ESTÁ AQUI
                 $action = $route->getActionName();
 
                 $controller = new $class();
