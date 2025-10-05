@@ -1,0 +1,14 @@
+<?php
+
+use Lib\FlashMessage;
+
+if (FlashMessage::hasMessages()) : ?>
+    <div style="position: absolute; top: 80px; right: 20px; z-index: 1050; min-width: 250px;">
+        <?php foreach (FlashMessage::getMessages() as $flash) : ?>
+            <div class="alert alert-<?= htmlspecialchars($flash['type']) ?> alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($flash['message']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

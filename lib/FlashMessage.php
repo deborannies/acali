@@ -40,7 +40,7 @@ class FlashMessage
         }
 
         $messages = $_SESSION[self::FLASH_KEY];
-        unset($_SESSION[self::FLASH_KEY]); // Limpa as mensagens depois de lê-las
+        unset($_SESSION[self::FLASH_KEY]);
         return $messages;
     }
 

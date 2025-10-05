@@ -44,12 +44,12 @@
             </nav>
         </aside>
         <section class="offset-3 col-9 px-4">
+            <?php require __DIR__ . '/_flash_messages.phtml'; ?>
             <header class="mb-3">
                 <h1>
                     <?= $title ?>
                 </h1>
             </header>
-
             <?php require $viewPath ?>
         </section>
     </main>

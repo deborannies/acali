@@ -14,13 +14,13 @@ $isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
                             <?= htmlspecialchars($project->getTitle()) ?>
                         </h5>
                     </a>
-                    
+
                     <?php if ($isAdmin): ?>
                     <div class="mt-3" style="position: relative; z-index: 1;">
                         <a href="<?= route('projects.edit', ['id' => $project->getId()]) ?>" class="card-link text-decoration-none small">
                             <i class="bi bi-pencil-square"></i> Editar
                         </a>
-                        
+
                         <form action="<?= route('projects.destroy', ['id' => $project->getId()]) ?>" method="POST" class="d-inline">
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="card-link text-decoration-none small text-danger btn btn-link p-0">
