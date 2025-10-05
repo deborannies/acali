@@ -67,6 +67,7 @@ class User
     public function save(): bool
     {
         $this->validate();
+
         if (!empty($this->errors)) {
             return false;
         }
@@ -74,11 +75,13 @@ class User
         $pdo = Database::getDatabaseConn();
 
         if ($this->id) {
+            // Update
             $stmt = $pdo->prepare(
                 "UPDATE users SET name = :name, email = :email, role = :role WHERE id = :id"
             );
             $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
         } else {
+            // Insert
             $stmt = $pdo->prepare(
                 "INSERT INTO users (name, email, encrypted_password, role) VALUES (:name, :email, :password, :role)"
             );
@@ -107,7 +110,12 @@ class User
         $stmt = $pdo->query("SELECT * FROM users");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return array_map(fn(array $row): self => new self($row), $rows);
+        $users = [];
+        foreach ($rows as $row) {
+            $users[] = new self($row);
+        }
+
+        return $users;
     }
 
     public static function findById(int $id): ?self
@@ -119,7 +127,11 @@ class User
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $row ? new self($row) : null;
+        if ($row) {
+            return new self($row);
+        }
+
+        return null;
     }
 
     // Alias para compatibilidade com ProjectsController
@@ -137,28 +149,48 @@ class User
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $row ? new self($row) : null;
+        if ($row) {
+            return new self($row);
+        }
+
+        return null;
     }
 
     public function destroy(): void
     {
-        if (!$this->id) return;
+        if (!$this->id) {
+            return;
+        }
+
         $pdo = Database::getDatabaseConn();
         $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
         $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
         $stmt->execute();
+
         $this->id = null;
     }
 
+    // -------------------- Auth --------------------
     public function authenticate(string $password): bool
     {
-        return password_verify($password, $this->encrypted_password ?? '');
+        if ($this->encrypted_password === null) {
+            return false;
+        }
+
+        return password_verify($password, $this->encrypted_password);
     }
 
+    // -------------------- Validation --------------------
     public function validate(): void
     {
         $this->errors = [];
-        if (empty($this->email)) $this->errors['email'] = 'O e-mail é obrigatório.';
-        if (!$this->id && empty($this->password)) $this->errors['password'] = 'A senha é obrigatória.';
+
+        if (empty($this->email)) {
+            $this->errors['email'] = 'O e-mail é obrigatório.';
+        }
+
+        if (!$this->id && empty($this->password)) {
+            $this->errors['password'] = 'A senha é obrigatória.';
+        }
     }
 }
