@@ -5,7 +5,9 @@ namespace App\Controllers;
 class BaseController
 {
     /**
+     * @param string $view
      * @param array<string, mixed> $data
+     * @param string $layout
      */
     protected function render(string $view, array $data = [], string $layout = 'application'): void
     {
@@ -15,6 +17,7 @@ class BaseController
     }
 
     /**
+     * @param string $routeName
      * @param array<string, mixed> $params
      */
     protected function redirectToRoute(string $routeName, array $params = []): void

@@ -28,6 +28,21 @@ class ProjectsController extends BaseController
         }
     }
 
+    private function isAdmin(): bool
+    {
+        $user = $this->currentUser();
+        return $user && $user->getRole() === 'admin';
+    }
+
+    private function adminOnly(): void
+    {
+        if (!$this->isAdmin()) {
+            FlashMessage::danger('Você não tem permissão para acessar essa página.');
+            $this->redirectToRoute('projects.index');
+            exit;
+        }
+    }
+
     public function index(Request $request): void
     {
         $this->authenticated();
@@ -48,6 +63,7 @@ class ProjectsController extends BaseController
     public function new(Request $request): void
     {
         $this->authenticated();
+        $this->adminOnly();
         $project = new Project();
         $title = 'Novo Projeto';
         $this->render('projects/new', compact('project', 'title'));
@@ -56,6 +72,7 @@ class ProjectsController extends BaseController
     public function create(Request $request): void
     {
         $this->authenticated();
+        $this->adminOnly();
         $params = $request->getParams();
         $project = new Project($params['project']['title']);
         if ($project->save()) {
@@ -69,6 +86,7 @@ class ProjectsController extends BaseController
     public function edit(Request $request): void
     {
         $this->authenticated();
+        $this->adminOnly();
         $params = $request->getParams();
         $project = Project::findById($params['id']);
         $title = "Editar Projeto #{$project->getId()}";
@@ -78,6 +96,7 @@ class ProjectsController extends BaseController
     public function update(Request $request): void
     {
         $this->authenticated();
+        $this->adminOnly();
         $params = $request->getParams();
         $project = Project::findById($params['id']);
         $project->setTitle($params['project']['title']);
@@ -92,6 +111,7 @@ class ProjectsController extends BaseController
     public function destroy(Request $request): void
     {
         $this->authenticated();
+        $this->adminOnly();
         $params = $request->getParams();
         $project = Project::findById($params['id']);
         if ($project) {

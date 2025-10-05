@@ -10,4 +10,3 @@ require __DIR__ . '/../config/bootstrap.php';
 // Em vez de chamar o método estaticamente, obtemos a instância e depois chamamos o dispatch.
 // No entanto, o seu Router.php tem um método init() que já faz isto. Vamos usá-lo.
 \Core\Router\Router::init();
-

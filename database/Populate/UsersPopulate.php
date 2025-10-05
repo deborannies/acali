@@ -8,17 +8,24 @@ class UsersPopulate
 {
     public static function populate(): void
     {
-        $user = new User();
-        $user->name = 'Usuário de Teste';
-        $user->email = 'teste@example.com';
+        // Usuário Admin
+        $admin = new User();
+        $admin->name = 'Administrador';
+        $admin->email = 'admin@teste.com';
+        $admin->password = '123456';
+        $admin->role = 'admin';
+        $admin->save();
 
-        // Apenas defina a propriedade 'password'
-        // O modelo User irá criptografá-la automaticamente
+        echo "✅ Usuário admin 'admin@teste.com' criado com sucesso!\n";
+
+        // Usuário Comum
+        $user = new User();
+        $user->name = 'Usuário Comum';
+        $user->email = 'user@teste.com';
         $user->password = '123456';
-        
-        // Salva no banco
+        $user->role = 'user';
         $user->save();
 
-        echo "Usuário de teste 'teste@example.com' foi criado com sucesso!\n";
+        echo "✅ Usuário comum 'user@teste.com' criado com sucesso!\n";
     }
 }

@@ -1,3 +1,11 @@
+<?php
+$isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
+if (!$isAdmin) {
+    echo "<div class='alert alert-danger'>Você não tem permissão para acessar esta página.</div>";
+    return;
+}
+?>
+
 <form action="<?= route('projects.create') ?>" method="POST" class="<?= empty($project->hasErrors()) ? '' : 'was-validated' ?>" novalidate>
     <div class="mb-3">
         <label for="project_title" class="form-label">Título:</label>

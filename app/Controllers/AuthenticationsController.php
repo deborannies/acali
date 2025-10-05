@@ -23,7 +23,10 @@ class AuthenticationsController extends BaseController
         $user = User::findByEmail($email);
 
         if ($user && $user->authenticate($password)) {
-            $_SESSION['user'] = ['id' => $user->id];
+            $_SESSION['user'] = [
+                'id' => $user->id,
+                'role' => $user->getRole()
+            ];
             FlashMessage::success('Login realizado com sucesso!');
             $this->redirectToRoute('projects.index');
         } else {
