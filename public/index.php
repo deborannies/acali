@@ -1,15 +1,12 @@
 <?php
 
-use Core\Router\Router;
+// Inicia a sessão para o login funcionar
+session_start();
 
-// 1. Carrega o autoloader e as configurações iniciais
+// Carrega o autoloader e as configurações
 require __DIR__ . '/../config/bootstrap.php';
 
-// 2. Pega a instância do Roteador
-$router = Router::getInstance();
-
-// 3. Carrega TODAS as rotas definidas no seu arquivo
-require __DIR__ . '/../config/routes.php';
-
-// 4. Agora, com as rotas carregadas, despacha a requisição
-$router->dispatch();
+// ESTA É A CORREÇÃO
+// Em vez de chamar o método estaticamente, obtemos a instância e depois chamamos o dispatch.
+// No entanto, o seu Router.php tem um método init() que já faz isto. Vamos usá-lo.
+\Core\Router\Router::init();

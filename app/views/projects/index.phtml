@@ -1,5 +1,8 @@
-<div class="row">
+<?php
+$isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
+?>
 
+<div class="row">
     <?php foreach ($projects as $project): ?>
         <div class="col-12 col-md-6 col-lg-4 mb-4">
             <div class="card h-100 project-card">
@@ -12,6 +15,7 @@
                         </h5>
                     </a>
                     
+                    <?php if ($isAdmin): ?>
                     <div class="mt-3" style="position: relative; z-index: 1;">
                         <a href="<?= route('projects.edit', ['id' => $project->getId()]) ?>" class="card-link text-decoration-none small">
                             <i class="bi bi-pencil-square"></i> Editar
@@ -24,11 +28,14 @@
                             </button>
                         </form>
                     </div>
+                    <?php endif; ?>
+
                 </div>
             </div>
         </div>
     <?php endforeach; ?>
 
+    <?php if ($isAdmin): ?>
     <div class="col-12 col-md-6 col-lg-4 mb-4">
         <a href="<?= route('projects.new') ?>" class="card h-100 card-add-new text-decoration-none">
             <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
@@ -37,5 +44,5 @@
             </div>
         </a>
     </div>
-
+    <?php endif; ?>
 </div>
