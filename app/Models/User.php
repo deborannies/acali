@@ -134,7 +134,6 @@ class User
         return null;
     }
 
-    // Alias para compatibilidade com ProjectsController
     public static function find(int $id): ?self
     {
         return self::findById($id);

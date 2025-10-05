@@ -13,14 +13,12 @@ class RequestTest extends TestCase
         parent::setUp();
         require_once Constants::rootPath()->join('tests/Unit/Core/Http/header_mock.php');
 
-        // Define um estado padrão para cada teste
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/test';
     }
 
     public function tearDown(): void
     {
-        // Limpa as variáveis globais após cada teste
         $_REQUEST = [];
         unset($_SERVER['REQUEST_METHOD']);
         unset($_SERVER['REQUEST_URI']);
@@ -56,7 +54,6 @@ class RequestTest extends TestCase
         $request = new Request();
         $params = ['id' => '1'];
 
-        // Garante que os parâmetros começam vazios (pois $_REQUEST é limpo no tearDown)
         $this->assertEmpty($request->getParams());
 
         $request->addParams($params);
