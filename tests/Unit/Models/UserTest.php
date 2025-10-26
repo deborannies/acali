@@ -10,8 +10,8 @@ class UserTest extends TestCase
 {
     public function tearDown(): void
     {
-        parent::tearDown();
         Database::getDatabaseConn()->exec('TRUNCATE TABLE users;');
+        parent::tearDown();
     }
 
     /** @test */
@@ -151,12 +151,13 @@ class UserTest extends TestCase
             'password' => '123',
         ]);
         $user->save();
+        $userId = $user->getId();
 
         $this->assertCount(1, User::all(10, 0));
 
         $user->destroy();
 
         $this->assertCount(0, User::all(10, 0));
-        $this->assertNull(User::findById($user->getId()));
+        $this->assertNull(User::findById($userId));
     }
 }

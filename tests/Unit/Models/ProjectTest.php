@@ -17,6 +17,6 @@ class ProjectTest extends TestCase
     {
         $project = new Project(title: 'Novo Projeto de Pesquisa');
         $this->assertTrue($project->save());
-        $this->assertCount(1, Project::all());
+        $this->assertCount(1, Project::all(10, 0));
     }
 }

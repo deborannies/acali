@@ -99,7 +99,7 @@ class Project
     /**
      * @return array<int, Project>
      */
-    public static function all(int $limit, int $offset): array
+    public static function all(): array
     {
         $projects = [];
         $pdo = Database::getDatabaseConn();
