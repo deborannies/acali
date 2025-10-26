@@ -19,7 +19,7 @@
             <a class="navbar-brand" href="<?= route('root') ?>">Acali</a>
 
             <div class="d-flex">
-                <?php if ($this->currentUser): ?>
+                <?php if ($this->currentUser) : ?>
                     <div class="dropdown">
                         <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <?= $this->currentUser->getEmail() ?>

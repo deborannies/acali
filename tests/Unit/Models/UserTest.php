@@ -10,8 +10,8 @@ class UserTest extends TestCase
 {
     public function tearDown(): void
     {
-        parent::tearDown();
         Database::getDatabaseConn()->exec('TRUNCATE TABLE users;');
+        parent::tearDown();
     }
 
     /** @test */
@@ -35,7 +35,7 @@ class UserTest extends TestCase
         ]);
 
         $this->assertTrue($user->save());
-        $allUsers = User::all();
+        $allUsers = User::all(10, 0);
         $this->assertCount(1, $allUsers);
         $this->assertEquals('Jane Doe', $allUsers[0]->getName());
     }
@@ -45,7 +45,18 @@ class UserTest extends TestCase
     {
         $user = new User(['name' => 'Jane Doe', 'email' => 'jane.doe@example.com']);
         $this->assertFalse($user->save());
-        $this->assertCount(0, User::all());
+        $this->assertTrue($user->hasErrors());
+        $this->assertEquals('A senha é obrigatória.', $user->errors('password'));
+        $this->assertCount(0, User::all(10, 0));
+    }
+
+    /** @test */
+    public function it_should_not_create_user_if_name_missing(): void
+    {
+        $user = new User(['email' => 'jane.doe@example.com', 'password' => '123']);
+        $this->assertFalse($user->save());
+        $this->assertTrue($user->hasErrors());
+        $this->assertEquals('O nome é obrigatório.', $user->errors('name'));
     }
 
     /** @test */
@@ -128,7 +139,7 @@ class UserTest extends TestCase
 
         $updatedUser = User::findById($user->getId());
         $this->assertEquals('Updated Name', $updatedUser->getName());
-        $this->assertCount(1, User::all());
+        $this->assertCount(1, User::all(10, 0));
     }
 
     /** @test */
@@ -140,12 +151,13 @@ class UserTest extends TestCase
             'password' => '123',
         ]);
         $user->save();
+        $userId = $user->getId();
 
-        $this->assertCount(1, User::all());
+        $this->assertCount(1, User::all(10, 0));
 
         $user->destroy();
 
-        $this->assertCount(0, User::all());
-        $this->assertNull(User::findById($user->getId()));
+        $this->assertCount(0, User::all(10, 0));
+        $this->assertNull(User::findById($userId));
     }
 }

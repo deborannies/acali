@@ -13,11 +13,17 @@ class ProjectsPopulate
             'Plataforma de Estágios',
             'CRUD Virtualizado',
             'Críticas de Filmes',
+            'Portal de Notícias Internas',
+            'Sistema de Biblioteca',
+            'Ferramenta de E-commerce',
+            'Blog de Tecnologia',
+            'Gerenciador de Tarefas (Kanban)',
+            'Sistema de Votação Online',
+            'API de Clima',
         ];
 
         foreach ($projects as $title) {
-            $project = new Project();
-            $project->setTitle($title);
+            $project = new Project(title: $title);
             $project->save();
         }
 
