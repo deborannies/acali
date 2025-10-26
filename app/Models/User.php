@@ -7,15 +7,15 @@ use PDO;
 
 class User
 {
-    public ?int $id = null;
-    public ?string $name = null;
-    public ?string $email = null;
-    public ?string $encrypted_password = null;
-    public string $role = 'user';
-    public ?string $password = null;
+    private ?int $id = null;
+    private ?string $name = null;
+    private ?string $email = null;
+    private ?string $encrypted_password = null;
+    private string $role = 'user';
+    private ?string $password = null;
 
     /** @var array<string, string> */
-    public array $errors = [];
+    private array $errors = [];
 
     public static string $table = 'users';
 
@@ -63,12 +63,43 @@ class User
         $this->email = $email;
     }
 
+    // -------------------- Validation --------------------
+    public function isValid(): bool
+    {
+        $this->errors = [];
+
+        if (empty($this->name)) {
+            $this->errors['name'] = 'O nome é obrigatório.';
+        }
+
+        if (empty($this->email)) {
+            $this->errors['email'] = 'O e-mail é obrigatório.';
+        }
+
+        if (!$this->id && empty($this->password)) {
+            $this->errors['password'] = 'A senha é obrigatória.';
+        }
+
+        return empty($this->errors);
+    }
+
+    public function hasErrors(): bool
+    {
+        return !empty($this->errors);
+    }
+
+    public function errors(string $index = null): ?string
+    {
+        if (isset($this->errors[$index])) {
+            return $this->errors[$index];
+        }
+        return null;
+    }
+
     // -------------------- CRUD --------------------
     public function save(): bool
     {
-        $this->validate();
-
-        if (!empty($this->errors)) {
+        if (!$this->isValid()) {
             return false;
         }
 
@@ -85,7 +116,8 @@ class User
             $stmt = $pdo->prepare(
                 "INSERT INTO users (name, email, encrypted_password, role) VALUES (:name, :email, :password, :role)"
             );
-            $stmt->bindValue(':password', password_hash($this->password ?? '', PASSWORD_DEFAULT));
+            $this->encrypted_password = password_hash($this->password ?? '', PASSWORD_DEFAULT);
+            $stmt->bindValue(':password', $this->encrypted_password);
         }
 
         $stmt->bindValue(':name', $this->name);
@@ -104,10 +136,15 @@ class User
     /**
      * @return User[]
      */
-    public static function all(): array
+    public static function all(int $limit, int $offset): array
     {
         $pdo = Database::getDatabaseConn();
-        $stmt = $pdo->query("SELECT * FROM users");
+        $sql = "SELECT * FROM users LIMIT :limit OFFSET :offset;";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $users = [];
@@ -116,6 +153,16 @@ class User
         }
 
         return $users;
+    }
+
+    public static function countAll(): int
+    {
+        $pdo = Database::getDatabaseConn();
+        $sql = 'SELECT COUNT(id) FROM users;';
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
     }
 
     public static function findById(int $id): ?self
@@ -177,19 +224,5 @@ class User
         }
 
         return password_verify($password, $this->encrypted_password);
-    }
-
-    // -------------------- Validation --------------------
-    public function validate(): void
-    {
-        $this->errors = [];
-
-        if (empty($this->email)) {
-            $this->errors['email'] = 'O e-mail é obrigatório.';
-        }
-
-        if (!$this->id && empty($this->password)) {
-            $this->errors['password'] = 'A senha é obrigatória.';
-        }
     }
 }

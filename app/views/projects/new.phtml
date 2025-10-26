@@ -1,16 +1,18 @@
-<?php
-$isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
-if (!$isAdmin) {
-    echo "<div class='alert alert-danger'>Você não tem permissão para acessar esta página.</div>";
-    return;
-}
-?>
-
-<form action="<?= route('projects.create') ?>" method="POST" class="<?= empty($project->hasErrors()) ? '' : 'was-validated' ?>" novalidate>
+<form action="<?= route('projects.create') ?>" method="POST" class="<?= $project->hasErrors() ? 'was-validated' : '' ?>" novalidate>
     <div class="mb-3">
         <label for="project_title" class="form-label">Título:</label>
-        <input type="text" name="project[title]" class="form-control" id="project_title" required>
-        <div class="invalid-feedback"><?= $project->errors('title') ? $project->errors('title') : '' ?></div>
+        <input type="text"
+               name="project[title]"
+               class="form-control <?= $project->errors('title') ? 'is-invalid' : '' ?>"
+               id="project_title"
+               value="<?= htmlspecialchars($project->getTitle()) ?>"
+               required>
+
+        <?php if ($project->errors('title')) : ?>
+            <div class="invalid-feedback">
+                <?= htmlspecialchars($project->errors('title')) ?>
+            </div>
+        <?php endif; ?>
     </div>
 
     <button type="submit" class="btn btn-primary">Registrar</button>

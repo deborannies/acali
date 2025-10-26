@@ -1,0 +1,48 @@
+<?php
+/**
+ * @var \Lib\Paginator $paginator
+ * @var string $routeName
+ * @var array<string, mixed> $params
+ */
+?>
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <?php if ($paginator->hasPreviousPage()) : ?>
+            <li class="page-item">
+                <a class="page-link" href="<?= route($routeName, array_merge($params, ['page' => $paginator->getPreviousPage()])) ?>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="visually-hidden">Anterior</span>
+                </a>
+            </li>
+        <?php else : ?>
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&laquo;</span>
+            </li>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $paginator->getTotalPages(); $i++) : ?>
+            <?php if ($i == $paginator->getCurrentPage()) : ?>
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link"><?= $i ?></span>
+                </li>
+            <?php else : ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= route($routeName, array_merge($params, ['page' => $i])) ?>"><?= $i ?></a>
+                </li>
+            <?php endif; ?>
+        <?php endfor; ?>
+
+        <?php if ($paginator->hasNextPage()) : ?>
+            <li class="page-item">
+                <a class="page-link" href="<?= route($routeName, array_merge($params, ['page' => $paginator->getNextPage()])) ?>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="visually-hidden">Próxima</span>
+                </a>
+            </li>
+        <?php else : ?>
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&raquo;</span>
+            </li>
+        <?php endif; ?>
+    </ul>
+</nav>

@@ -3,52 +3,28 @@
 namespace App\Controllers;
 
 use App\Models\Project;
-use App\Models\User;
 use Core\Http\Request;
-use Lib\FlashMessage;
+use Lib\Paginator;
 
 class ProjectsController extends BaseController
 {
-    protected ?User $currentUser = null;
-
-    private function currentUser(): ?User
-    {
-        if ($this->currentUser === null && isset($_SESSION['user']['id'])) {
-            $this->currentUser = User::find($_SESSION['user']['id']);
-        }
-        return $this->currentUser;
-    }
-
-    private function authenticated(): void
-    {
-        if ($this->currentUser() === null) {
-            FlashMessage::danger('Você deve estar logado para acessar essa página.');
-            $this->redirectToRoute('login.form');
-            exit;
-        }
-    }
-
-    private function isAdmin(): bool
-    {
-        $user = $this->currentUser();
-        return $user && $user->getRole() === 'admin';
-    }
-
-    private function adminOnly(): void
-    {
-        if (!$this->isAdmin()) {
-            FlashMessage::danger('Você não tem permissão para acessar essa página.');
-            $this->redirectToRoute('projects.index');
-            exit;
-        }
-    }
+    private const PROJECTS_PER_PAGE = 5;
 
     public function index(Request $request): void
     {
         $this->authenticated();
-        $projects = Project::all();
+        $params = $request->getParams();
+        $page = (int) ($params['page'] ?? 1);
+        $limit = self::PROJECTS_PER_PAGE;
+        $offset = ($page - 1) * $limit;
+
+        $totalProjects = Project::countAll();
+        $projects = Project::all($limit, $offset);
+
+        $paginator = new Paginator($projects, $totalProjects, $limit, $page);
+
         $title = 'Projetos Cadastrados';
-        $this->render('projects/index', compact('projects', 'title'));
+        $this->render('projects/index', compact('paginator', 'title'));
     }
 
     public function show(Request $request): void
