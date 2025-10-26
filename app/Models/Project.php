@@ -99,15 +99,15 @@ class Project
     /**
      * @return array<int, Project>
      */
-    public static function all(): array
+    public static function all(int $limit, int $offset): array
     {
         $projects = [];
         $pdo = Database::getDatabaseConn();
         $sql = 'SELECT id, title FROM projects LIMIT :limit OFFSET :offset;';
 
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -141,8 +141,8 @@ class User
         $pdo = Database::getDatabaseConn();
         $sql = "SELECT * FROM users LIMIT :limit OFFSET :offset;";
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
