@@ -9,6 +9,8 @@ class ProjectsControllerTest extends ControllerTestCase
 {
     public function test_list_all_projects(): void
     {
+        $this->mockRegularUser();
+
         $project1 = new Project(title: 'Projeto TCC ACALI');
         $project2 = new Project(title: 'Pesquisa sobre IA');
         $project1->save();

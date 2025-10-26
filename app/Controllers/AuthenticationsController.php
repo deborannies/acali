@@ -24,7 +24,7 @@ class AuthenticationsController extends BaseController
 
         if ($user && $user->authenticate($password)) {
             $_SESSION['user'] = [
-                'id' => $user->id,
+                'id' => $user->getId(),
                 'role' => $user->getRole()
             ];
             FlashMessage::success('Login realizado com sucesso!');
