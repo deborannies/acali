@@ -1,5 +1,56 @@
 <div class="card">
     <div class="card-body">
-        <?= htmlspecialchars($project->getTitle()) ?>
+        <h5 class="card-title">Projeto: <?= htmlspecialchars($project->getTitle()) ?></h5>
     </div>
 </div>
+
+<hr>
+
+<div class="card mt-4">
+    <div class="card-header">
+        Arquivos do Projeto (Resultados)
+    </div>
+    <div class="card-body">
+        
+        <ul class="list-group list-group-flush">
+            <?php if (empty($arquivos)): ?>
+                <li class="list-group-item">Nenhum arquivo enviado para este projeto.</li>
+            <?php endif; ?>
+
+            <?php foreach ($arquivos as $arquivo): ?>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="<?= htmlspecialchars($arquivo->getPublicPath()) ?>" target="_blank">
+                        <?= htmlspecialchars($arquivo->getNomeOriginal()) ?>
+                    </a>
+                    
+                    <?php if ($this->isAdmin()): // Só admin pode remover ?>
+                        <form action="/arquivos/<?= $arquivo->getId() ?>" method="POST" style="display:inline;">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?')">
+                                Remover
+                            </button>
+                        </form>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+
+        <?php if ($this->isAdmin()): // Só admin pode fazer upload ?>
+            <hr>
+            <h5 class="card-title mt-3">Anexar novo arquivo</h5>
+            
+            <?php require __DIR__ . '/../layouts/_flash_messages.phtml'; ?>
+
+            <form action="/projects/<?= $project->getId() ?>/upload" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="arquivo" class="form-label">Arquivo (Max 2MB, tipos: JPEG, PNG, PDF):</label>
+                    <input type="file" name="arquivo" id="arquivo" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Arquivo</button>
+            </form>
+        <?php endif; ?>
+
+    </div>
+</div>
+
+<a href="/projects" class="btn btn-secondary mt-3">Voltar para Lista</a>

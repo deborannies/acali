@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Core\Database\Database;
+use App\Models\Arquivo;
 use PDO;
 
 class Project
@@ -145,5 +146,13 @@ class Project
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return new Project(id: $row['id'], title: $row['title']);
+    }
+    /**
+     * @return array<int, Arquivo>
+     */
+    public function getArquivos(): array
+    {
+        require_once __DIR__ . '/Arquivo.php';
+        return Arquivo::findByProjectId($this->id);
     }
 }

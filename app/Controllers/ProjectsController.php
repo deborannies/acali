@@ -3,8 +3,10 @@
 namespace App\Controllers;
 
 use App\Models\Project;
+use App\Models\Arquivo;
 use Core\Http\Request;
 use Lib\Paginator;
+use Lib\FlashMessage;
 
 class ProjectsController extends BaseController
 {
@@ -32,8 +34,16 @@ class ProjectsController extends BaseController
         $this->authenticated();
         $params = $request->getParams();
         $project = Project::findById($params['id']);
+
+        if (!$project) {
+            FlashMessage::danger('Projeto não encontrado.');
+            $this->redirectToRoute('projects.index');
+            return;
+        }
+
+        $arquivos = $project->getArquivos();
         $title = "Visualização do Projeto #{$project->getId()}";
-        $this->render('projects/show', compact('project', 'title'));
+        $this->render('projects/show', compact('project', 'title', 'arquivos'));
     }
 
     public function new(Request $request): void
@@ -90,8 +100,15 @@ class ProjectsController extends BaseController
         $this->adminOnly();
         $params = $request->getParams();
         $project = Project::findById($params['id']);
+
         if ($project) {
+            $arquivos = $project->getArquivos();
+            foreach ($arquivos as $arquivo) {
+                $arquivo->deleteFileFromFilesystem();
+            }
             $project->destroy();
+
+            FlashMessage::success('Projeto removido com sucesso.');
         }
         $this->redirectToRoute('projects.index');
     }
