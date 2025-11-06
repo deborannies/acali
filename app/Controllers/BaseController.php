@@ -10,27 +10,24 @@ class BaseController
 {
     protected ?User $currentUser = null;
 
-    protected function currentUser(): ?User
+    public function __construct()
     {
-        if ($this->currentUser === null && isset($_SESSION['user']['id'])) {
-            $this->currentUser = User::find($_SESSION['user']['id']);
+        if (isset($_SESSION['user']['id'])) {
+            $this->currentUser = User::findById($_SESSION['user']['id']);
         }
-        return $this->currentUser;
     }
 
     protected function authenticated(): void
     {
-        if ($this->currentUser() === null) {
+        if ($this->currentUser === null) {
             FlashMessage::danger('Você deve estar logado para acessar essa página.');
             $this->redirectToRoute('login.form');
-            exit;
         }
     }
 
     protected function isAdmin(): bool
     {
-        $user = $this->currentUser();
-        return $user && $user->getRole() === 'admin';
+        return $this->currentUser && $this->currentUser->getRole() === 'admin';
     }
 
     protected function adminOnly(): void
@@ -38,7 +35,6 @@ class BaseController
         if (!$this->isAdmin()) {
             FlashMessage::danger('Você não tem permissão para acessar essa página.');
             $this->redirectToRoute('projects.index');
-            exit;
         }
     }
 
@@ -49,8 +45,6 @@ class BaseController
      */
     protected function render(string $view, array $data = [], string $layout = 'application'): void
     {
-        $this->currentUser();
-
         $viewPath = Constants::rootPath()->join('app/views/' . $view . '.phtml');
         extract($data);
         require Constants::rootPath()->join('app/views/layouts/' . $layout . '.phtml');

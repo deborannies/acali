@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Core\Database\BelongsTo;
 use Core\Database\Database;
+use Core\Database\HasMany;
 use PDO;
 
 class User
@@ -29,6 +31,22 @@ class User
                 $this->$key = $value;
             }
         }
+    }
+
+    public function __get(string $name)
+    {
+        if (method_exists($this, $name)) {
+            $method = $this->$name();
+            if ($method instanceof HasMany || $method instanceof BelongsTo) {
+                return $method->get();
+            }
+        }
+        return null;
+    }
+
+    public function projects(): HasMany
+    {
+        return new HasMany($this, Project::class, 'user_id');
     }
 
     // -------------------- Getters --------------------
