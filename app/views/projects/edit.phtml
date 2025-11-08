@@ -1,4 +1,4 @@
-<form action="<?= route('projects.update', ['id' => $project->getId()]) ?>" method="POST" class="<?= $project->hasErrors() ? 'was-validated' : '' ?>" novalidate>
+<form action="<?= route('projects.update', ['id' => $project->id]) ?>" method="POST" class="<?= $project->hasErrors() ? 'was-validated' : '' ?>" novalidate>
     <input type="hidden" name="_method" value="PUT">
 
     <div class="mb-3">
@@ -7,7 +7,7 @@
                name="project[title]"
                class="form-control <?= $project->errors('title') ? 'is-invalid' : '' ?>"
                id="project_title"
-               value="<?= htmlspecialchars($project->getTitle()) ?>"
+               value="<?= htmlspecialchars($project->title) ?>"
                required>
 
         <?php if ($project->errors('title')) : ?>

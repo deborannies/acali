@@ -1,6 +1,10 @@
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Projeto: <?= htmlspecialchars($project->getTitle()) ?></h5>
+        <h5 class="card-title">Projeto: <?= htmlspecialchars($project->title) ?></h5>
+
+        <?php if ($project->errors('title')): ?>
+            <div class="alert alert-danger p-2"><?= $project->errors('title') ?></div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -20,11 +24,11 @@
             <?php foreach ($arquivos as $arquivo): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="<?= htmlspecialchars($arquivo->getPublicPath()) ?>" target="_blank">
-                        <?= htmlspecialchars($arquivo->getNomeOriginal()) ?>
+                        <?= htmlspecialchars($arquivo->nome_original) ?>
                     </a>
                     
-                    <?php if ($this->isAdmin()): // Só admin pode remover ?>
-                        <form action="/arquivos/<?= $arquivo->getId() ?>" method="POST" style="display:inline;">
+                    <?php if ($this->isAdmin()): ?>
+                        <form action="<?= route('arquivos.destroy', ['id' => $arquivo->id]) ?>" method="POST" style="display:inline;">
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza?')">
                                 Remover
@@ -35,16 +39,22 @@
             <?php endforeach; ?>
         </ul>
 
-        <?php if ($this->isAdmin()): // Só admin pode fazer upload ?>
+        <?php if ($this->isAdmin()): ?>
             <hr>
             <h5 class="card-title mt-3">Anexar novo arquivo</h5>
             
             <?php require __DIR__ . '/../layouts/_flash_messages.phtml'; ?>
 
-            <form action="/projects/<?= $project->getId() ?>/upload" method="POST" enctype="multipart/form-data">
+            <form action="<?= route('arquivos.store', ['id' => $project->id]) ?>" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="arquivo" class="form-label">Arquivo (Max 2MB, tipos: JPEG, PNG, PDF):</label>
-                    <input type="file" name="arquivo" id="arquivo" class="form-control" required>
+                    <input type="file" name="arquivo" id="arquivo" class="form-control">
+                    
+                    <?php if ($project->errors('arquivo')): ?>
+                        <div class="text-danger mt-1" style="font-size: 0.9em;">
+                            <?= $project->errors('arquivo') ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <button type="submit" class="btn btn-primary">Enviar Arquivo</button>
             </form>
@@ -53,4 +63,4 @@
     </div>
 </div>
 
-<a href="/projects" class="btn btn-secondary mt-3">Voltar para Lista</a>
+<a href="<?= route('projects.index') ?>" class="btn btn-secondary mt-3">Voltar para Lista</a>
