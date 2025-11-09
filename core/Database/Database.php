@@ -7,18 +7,29 @@ use PDO;
 
 class Database
 {
+    /**
+     * @var \PDO|null A nossa ligação Singleton (estática).
+     */
+    private static ?\PDO $conn = null;
+
     public static function getDatabaseConn(): \PDO
     {
+        if (self::$conn !== null) {
+            return self::$conn;
+        }
+
         $user = $_ENV['DB_USERNAME'];
         $pwd = $_ENV['DB_PASSWORD'];
         $host = $_ENV['DB_HOST'];
         $port = $_ENV['DB_PORT'];
         $db = $_ENV['DB_DATABASE'];
 
-        $pdo = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db, $user, $pwd);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $dsn = 'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db;
 
-        return $pdo;
+        self::$conn = new PDO($dsn, $user, $pwd);
+        self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        return self::$conn;
     }
 
     public static function getConn(): PDO
@@ -35,6 +46,12 @@ class Database
 
         return $pdo;
     }
+
+    public static function setTestConnection(PDO $pdo): void
+    {
+        self::$conn = $pdo;
+    }
+
 
     public static function create(): void
     {

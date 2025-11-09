@@ -19,8 +19,7 @@ class AuthenticationsController extends BaseController
         $params = $request->getParams();
         $email = $params['user']['email'] ?? '';
         $password = $params['user']['password'] ?? '';
-
-        $user = User::findByEmail($email);
+        $user = User::findBy(['email' => $email]);
 
         if ($user && $user->authenticate($password)) {
             $_SESSION['user'] = [

@@ -37,11 +37,20 @@ class TestCase extends FrameworkTestCase
     {
         $admin = new \App\Models\User([
             'name' => 'Admin Test User',
-            'email' => 'admin@test.com',
-            'password' => '123456',
+            'email' => 'admin' . microtime(true) . '@test.com',
+            'password' => 'password123',
             'role' => 'admin'
         ]);
-        $admin->save();
+
+        $saved = $admin->save();
+
+        if (!$saved) {
+            throw new \Exception(
+                "Falha ao salvar mockAdminUser: O método save() retornou false." .
+                " Verifique as regras de validação do Model User 
+                (ex: password muito curto) ou constraints (ex: unique email)."
+            );
+        }
 
         $_SESSION['user'] = [
             'id' => $admin->getId(),
@@ -55,12 +64,20 @@ class TestCase extends FrameworkTestCase
     {
         $user = new \App\Models\User([
             'name' => 'Regular Test User',
-            'email' => 'user@test.com',
-            'password' => '123456',
+            'email' => 'user' . microtime(true) . '@test.com',
+            'password' => 'password123',
             'role' => 'user'
         ]);
-        $user->save();
 
+        $saved = $user->save();
+
+        if (!$saved) {
+            throw new \Exception(
+                "Falha ao salvar mockRegularUser: O método save() retornou false." .
+                " Verifique as regras de validação do Model User 
+                (ex: password muito curto) ou constraints (ex: unique email)."
+            );
+        }
         $_SESSION['user'] = [
             'id' => $user->getId(),
             'role' => $user->getRole()

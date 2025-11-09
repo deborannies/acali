@@ -1,5 +1,6 @@
 <?php
-$isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
+
+$isAdmin = $this->currentUser && $this->currentUser->role === 'admin';
 ?>
 
 <div class="row">
@@ -8,20 +9,21 @@ $isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
             <div class="card h-100 project-card">
                 <div class="card-body text-center d-flex flex-column">
 
-                    <a href="<?= route('projects.show', ['id' => $project->getId()]) ?>" class="text-decoration-none text-dark stretched-link">
+                    <a href="<?= route('projects.show', ['id' => $project->id]) ?>" class="text-decoration-none text-dark stretched-link">
                         <i class="bi bi-folder2-open fs-1 text-secondary mb-3"></i>
                         <h5 class="card-title mt-auto pt-2">
-                            <?= htmlspecialchars($project->getTitle()) ?>
+                            <?= htmlspecialchars($project->title) ?>
                         </h5>
                     </a>
 
                     <?php if ($isAdmin) : ?>
                         <div class="mt-3" style="position: relative; z-index: 1;">
-                            <a href="<?= route('projects.edit', ['id' => $project->getId()]) ?>" class="card-link text-decoration-none small">
+    
+                            <a href="<?= route('projects.edit', ['id' => $project->id]) ?>" class="card-link text-decoration-none small">
                                 <i class="bi bi-pencil-square"></i> Editar
                             </a>
 
-                            <form action="<?= route('projects.destroy', ['id' => $project->getId()]) ?>" method="POST" class="d-inline">
+                            <form action="<?= route('projects.destroy', ['id' => $project->id]) ?>" method="POST" class="d-inline">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="card-link text-decoration-none small text-danger btn btn-link p-0">
                                     <i class="bi bi-trash"></i> Excluir
@@ -49,6 +51,10 @@ $isAdmin = $this->currentUser && $this->currentUser->getRole() === 'admin';
 
 <div class="row">
     <div class="col-12">
-        <?php $paginator->render('projects.index'); ?>
+        <?php
+        $routeName = $paginator->getRoute() ?? 'projects.index';
+        $params = [];
+        require __DIR__ . '/../layouts/_pages.phtml';
+        ?>
     </div>
 </div>
