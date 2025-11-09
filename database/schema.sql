@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `arquivos`;
 DROP TABLE IF EXISTS `projects`;
 DROP TABLE IF EXISTS `users`;
 
@@ -14,5 +15,24 @@ CREATE TABLE `users` (
 -- Criação da tabela de projetos
 CREATE TABLE `projects` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `title` VARCHAR(255) NOT NULL
+    `title` VARCHAR(255) NOT NULL,
+    `user_id` INT NOT NULL,
+    
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Criação da tabela de arquivos
+CREATE TABLE `arquivos` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    
+    `project_id` INT NOT NULL, 
+    
+    `path_arquivo` VARCHAR(512) NOT NULL,    
+    `nome_original` VARCHAR(255) NOT NULL,  
+    `mime_type` VARCHAR(100) NOT NULL,      
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (`project_id`)
+        REFERENCES `projects`(`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

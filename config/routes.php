@@ -2,6 +2,7 @@
 
 use App\Controllers\ProjectsController;
 use App\Controllers\AuthenticationsController;
+use App\Controllers\ArquivosController; // <-- ADICIONADO
 use Core\Router\Route;
 
 // Create
@@ -19,6 +20,13 @@ Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('proje
 
 // Delete
 Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+
+// Rota para processar o UPLOAD (Item 3.2)
+Route::post('/projects/{id}/upload', [ArquivosController::class, 'store'])->name('arquivos.store');
+
+// Rota para DELETAR um arquivo (Item 3.3)
+Route::delete('/arquivos/{id}', [ArquivosController::class, 'destroy'])->name('arquivos.destroy');
+
 
 // Authentication
 // Rota para MOSTRAR o formulário de login
