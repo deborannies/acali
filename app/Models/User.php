@@ -5,10 +5,16 @@ namespace App\Models;
 use Core\Database\ActiveRecord\HasMany;
 use Core\Database\ActiveRecord\Model;
 
+/**
+ * @property string $name
+ * @property string $email
+ * @property string $encrypted_password
+ * @property string $role
+ * @property-read array<Project> $projects
+ */
 class User extends Model
 {
     protected static string $table = 'users';
-
     protected static array $columns = [
         'name',
         'email',
@@ -27,7 +33,7 @@ class User extends Model
         if (empty($this->email)) {
             $this->addError('email', 'O e-mail é obrigatório.');
         }
-        
+
         if ($this->newRecord() && empty($this->password)) {
             $this->addError('password', 'A senha é obrigatória.');
         }
@@ -43,7 +49,14 @@ class User extends Model
         if (!empty($this->password)) {
             $this->encrypted_password = password_hash($this->password, PASSWORD_DEFAULT);
         }
-        return parent::save();
+
+        $success = parent::save();
+
+        if ($success && !empty($this->password)) {
+            $this->password = null;
+        }
+
+        return $success;
     }
 
     public function projects(): HasMany
@@ -69,7 +82,7 @@ class User extends Model
     {
         return self::findById($id);
     }
-    
+
     public function getId(): ?int
     {
         return $this->id;

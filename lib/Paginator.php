@@ -20,7 +20,7 @@ class Paginator
     private array $items = [];
 
     /**
-     * @param class-string $class        
+     * @param class-string $class
      * @param int $page
      * @param int $per_page
      * @param string $table
@@ -54,7 +54,7 @@ class Paginator
     {
         $pdo = Database::getDatabaseConn();
         $sql = "SELECT COUNT(*) FROM {$this->table}";
-        
+
         $sqlConditions = $this->getSqlConditions();
         $sql .= $sqlConditions;
 
@@ -74,7 +74,7 @@ class Paginator
         $attributes = implode(', ', $this->attributes);
 
         $sql = "SELECT id, {$attributes} FROM {$this->table}";
-        
+
         $sqlConditions = $this->getSqlConditions();
         $sql .= $sqlConditions;
 
@@ -94,7 +94,7 @@ class Paginator
         }
         return $models;
     }
-    
+
     private function getSqlConditions(): string
     {
         if (empty($this->conditions)) {
@@ -104,7 +104,7 @@ class Paginator
         $sqlConditions = array_map(function ($column) {
             return " {$column} = :{$column}";
         }, array_keys($this->conditions));
-        
+
         return ' WHERE ' . implode(' AND ', $sqlConditions);
     }
 

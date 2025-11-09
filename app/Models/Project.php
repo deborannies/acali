@@ -8,6 +8,12 @@ use Core\Database\ActiveRecord\Model;
 use App\Models\Arquivo;
 use App\Models\User;
 
+/**
+ * @property string $title
+ * @property int $user_id
+ * @property-read array<Arquivo> $arquivos
+ * @property-read User $user
+ */
 class Project extends Model
 {
     protected static string $table = 'projects';
@@ -35,8 +41,8 @@ class Project extends Model
 
     public function deleteAssociatedFiles(): void
     {
-        $arquivos = $this->arquivos; 
-        
+        $arquivos = $this->arquivos;
+
         if (is_array($arquivos)) {
             foreach ($arquivos as $arquivo) {
                 $arquivo->deleteFileFromFilesystem();

@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Arquivo;
 use App\Models\Project;
-use App\Services\ArquivoService; 
+use App\Services\ArquivoService;
 use Core\Http\Request;
 use Lib\FlashMessage;
 
@@ -14,9 +14,9 @@ class ArquivosController extends BaseController
     {
         $this->authenticated();
         $this->adminOnly();
-        
+
         $params = $request->getParams();
-        $project_id = (int)$params['id']; 
+        $project_id = (int)$params['id'];
 
         $project = Project::findById($project_id);
         if (!$project) {
@@ -33,18 +33,16 @@ class ArquivosController extends BaseController
         $file = $_FILES['arquivo'];
 
         $service = new ArquivoService($project);
-        
+
         $success = $service->upload($file);
 
         if ($success) {
-
             FlashMessage::success('Arquivo enviado com sucesso!');
             $this->redirectToRoute('projects.show', ['id' => $project_id]);
         } else {
-            
-            $arquivos = $project->arquivos; 
-            $title = "Visualização do Projeto #{$project->getId()}";
-            
+            $arquivos = $project->arquivos;
+            $title = "Visualização do Projeto #{$project->id}";
+
             $this->render('projects/show', compact('project', 'title', 'arquivos'));
         }
     }
@@ -55,21 +53,21 @@ class ArquivosController extends BaseController
         $this->adminOnly();
 
         $params = $request->getParams();
-        $arquivo_id = (int)$params['id']; 
-        
+        $arquivo_id = (int)$params['id'];
+
         $arquivo = Arquivo::findById($arquivo_id);
 
         if ($arquivo) {
-            $project_id = $arquivo->project_id; 
-            
+            $project_id = $arquivo->project_id;
+
             $arquivo->deleteFileFromFilesystem();
-            $arquivo->destroy(); 
+            $arquivo->destroy();
 
             FlashMessage::success('Arquivo removido com sucesso.');
             $this->redirectToRoute('projects.show', ['id' => $project_id]);
         } else {
             FlashMessage::danger('Arquivo não encontrado.');
-            $this->redirectToRoute('projects.index'); 
+            $this->redirectToRoute('projects.index');
         }
     }
 }

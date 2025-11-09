@@ -10,7 +10,7 @@ use Tests\TestCase;
 class ProjectTest extends TestCase
 {
     /** @test */
-    public function it_can_set_properties_using_the_constructor_and_magic_get()
+    public function it_can_set_properties_using_the_constructor_and_magic_get(): void
     {
         $project = new Project(['title' => 'Projeto ACALI Teste', 'user_id' => 1]);
         $this->assertEquals('Projeto ACALI Teste', $project->title);
@@ -18,7 +18,7 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
-    public function it_is_invalid_without_a_title()
+    public function it_is_invalid_without_a_title(): void
     {
         $project = new Project(['user_id' => 1]);
         $this->assertFalse($project->isValid());
@@ -26,7 +26,7 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
-    public function it_is_invalid_without_a_user_id()
+    public function it_is_invalid_without_a_user_id(): void
     {
         $project = new Project(['title' => 'Projeto de Teste']);
         $this->assertFalse($project->isValid());
@@ -34,19 +34,15 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
-    public function it_can_be_saved_to_the_database()
+    public function it_can_be_saved_to_the_database(): void
     {
-        $user = User::find(1);
-        if (!$user) {
-            $user = new User(['name' => 'Test User', 'email' => 'test@user.com', 'password' => '123', 'role' => 'user']);
-            $user->save();
-        }
+        $user = $this->mockRegularUser();
 
         $project = new Project([
             'title' => 'Novo Projeto de Pesquisa',
-            'user_id' => $user->id
+            'user_id' => $user->getId()
         ]);
-        
+
         $this->assertTrue($project->save());
         $this->assertNotNull($project->id);
 
@@ -55,18 +51,27 @@ class ProjectTest extends TestCase
     }
 
     /** @test */
-    public function deleting_a_project_also_deletes_its_arquivos_from_database()
+    public function deleting_a_project_also_deletes_its_arquivos_from_database(): void
     {
-        $user = new User(['name' => 'Cascade Test', 'email' => 'cascade@test.com', 'password' => '123', 'role' => 'user']);
-        $user->save();
-        
-        $project = new Project(['title' => 'Cascade Project', 'user_id' => $user->id]);
-        $project->save();
+        $user = $this->mockRegularUser();
 
-        $arquivo1 = new Arquivo(['project_id' => $project->id, 'path_arquivo' => 'f1.pdf', 'nome_original' => 'f1.pdf', 'mime_type' => 'app/pdf']);
-        $arquivo1->save();
-        $arquivo2 = new Arquivo(['project_id' => $project->id, 'path_arquivo' => 'f2.pdf', 'nome_original' => 'f2.pdf', 'mime_type' => 'app/pdf']);
-        $arquivo2->save();
+        $project = new Project(['title' => 'Cascade Project', 'user_id' => $user->getId()]);
+        $this->assertTrue($project->save());
+        $arquivo1 = new Arquivo([
+            'project_id' => $project->id,
+            'path_arquivo' => 'f1.pdf',
+            'nome_original' => 'f1.pdf',
+            'mime_type' => 'app/pdf'
+        ]);
+        $this->assertTrue($arquivo1->save());
+
+        $arquivo2 = new Arquivo([
+            'project_id' => $project->id,
+            'path_arquivo' => 'f2.pdf',
+            'nome_original' => 'f2.pdf',
+            'mime_type' => 'app/pdf'
+        ]);
+        $this->assertTrue($arquivo2->save());
 
         $this->assertEquals(2, count($project->arquivos));
         $this->assertNotNull(Arquivo::findById($arquivo1->id));

@@ -8,7 +8,7 @@ use Tests\TestCase;
 class UserTest extends TestCase
 {
     /** @test */
-    public function it_is_invalid_without_a_name_or_email()
+    public function it_is_invalid_without_a_name_or_email(): void
     {
         $user = new User(['password' => '123']);
         $this->assertFalse($user->isValid());
@@ -17,20 +17,20 @@ class UserTest extends TestCase
     }
 
     /** @test */
-    public function it_is_invalid_without_a_password_when_new()
+    public function it_is_invalid_without_a_password_when_new(): void
     {
         $user = new User([
-            'name' => 'Test', 
+            'name' => 'Test',
             'email' => 'test@test.com'
         ]);
-        
+
         $this->assertTrue($user->newRecord());
         $this->assertFalse($user->isValid());
         $this->assertNotNull($user->errors('password'));
     }
 
     /** @test */
-    public function password_is_correctly_hashed_on_save()
+    public function password_is_correctly_hashed_on_save(): void
     {
         $user = new User([
             'name' => 'Hashing Test',

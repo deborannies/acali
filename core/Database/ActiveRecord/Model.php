@@ -31,7 +31,6 @@ abstract class Model
      */
     public function __construct($params = [])
     {
-        // Initialize attributes with null from database columns
         foreach (static::$columns as $column) {
             $this->attributes[$column] = null;
         }
@@ -41,7 +40,6 @@ abstract class Model
         }
     }
 
-    /* ------------------- MAGIC METHODS ------------------- */
     public function __get(string $property): mixed
     {
         if (property_exists($this, $property)) {
@@ -63,7 +61,7 @@ abstract class Model
                 'Core\Database\ActiveRecord\BelongsToMany'
             ];
 
-            if ($returnType !== null && in_array($returnType->getName(), $allowedTypes)) {
+            if ($returnType instanceof \ReflectionNamedType && in_array($returnType->getName(), $allowedTypes)) {
                 return $this->$method()->get();
             }
         }
@@ -104,7 +102,6 @@ abstract class Model
         return static::$columns;
     }
 
-    /* ------------------- VALIDATIONS METHODS ------------------- */
     public function isValid(): bool
     {
         $this->errors = [];
@@ -147,7 +144,6 @@ abstract class Model
 
     public function validates(): void {}
 
-    /* ------------------- DATABASE METHODS ------------------- */
     public function save(): bool
     {
         if ($this->isValid()) {
@@ -264,6 +260,7 @@ abstract class Model
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        /** @phpstan-ignore-next-line */
         return new static($row);
     }
 
@@ -287,6 +284,7 @@ abstract class Model
         $resp = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($resp as $row) {
+            /** @phpstan-ignore-next-line */
             $models[] = new static($row);
         }
 
@@ -341,6 +339,7 @@ abstract class Model
 
         $models = [];
         foreach ($rows as $row) {
+            /** @phpstan-ignore-next-line */
             $models[] = new static($row);
         }
         return $models;
@@ -382,8 +381,6 @@ abstract class Model
 
             return $rows['total_rows'];
         }
-
-    /* ------------------- RELATIONSHIPS METHODS ------------------- */
 
     public function belongsTo(string $related, string $foreignKey): BelongsTo
     {

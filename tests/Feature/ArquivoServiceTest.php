@@ -10,33 +10,28 @@ use Tests\TestCase;
 
 class ArquivoServiceTest extends TestCase
 {
-    private $user;
-    private $project;
+    private ?User $user = null;
+    private ?Project $project = null;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
-        $this->user = new User([
-            'name' => 'Test User', 
-            'email' => 'service@test.com', 
-            'password' => '123', 
-            'role' => 'admin'
-        ]);
-        $this->user->save();
-        
+        $this->user = $this->mockRegularUser();
+
         $this->project = new Project([
             'title' => 'Projeto para Testar Uploads',
-            'user_id' => $this->user->id
+            'user_id' => $this->user->getId()
         ]);
-        $this->project->save();
+
+        $this->assertTrue($this->project->save());
     }
 
     /** @test */
-    public function it_can_upload_a_file_successfully()
+    public function it_can_upload_a_file_successfully(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'test_upload');
         file_put_contents($tmpFile, 'Este é um teste de pdf falso.');
-        
+
         $fakeFileArray = [
             'name' => 'teste.pdf',
             'type' => 'application/pdf',
@@ -46,7 +41,6 @@ class ArquivoServiceTest extends TestCase
         ];
 
         $service = new ArquivoService($this->project);
-
         $result = $service->upload($fakeFileArray);
 
         $this->assertTrue($result);
@@ -56,16 +50,16 @@ class ArquivoServiceTest extends TestCase
         $this->assertNotNull($arquivo);
         $this->assertEquals('teste.pdf', $arquivo->nome_original);
 
-        $fullPath = __DIR__ . '/../../../public/' . $arquivo->path_arquivo;
+        $fullPath = __DIR__ . '/../../public/' . $arquivo->path_arquivo;
         $this->assertFileExists($fullPath);
-        
+
         unlink($fullPath);
     }
 
     /** @test */
-    public function it_can_delete_a_file()
+    public function it_can_delete_a_file(): void
     {
-        $fakeUploadDir = __DIR__ . '/../../../public/uploads/';
+        $fakeUploadDir = __DIR__ . '/../../public/uploads/';
         if (!is_dir($fakeUploadDir)) {
             mkdir($fakeUploadDir, 0775, true);
         }
@@ -79,8 +73,7 @@ class ArquivoServiceTest extends TestCase
             'nome_original' => 'fake_file_to_delete.txt',
             'mime_type' => 'text/plain'
         ]);
-        $arquivo->save();
-        
+        $this->assertTrue($arquivo->save());
         $this->assertFileExists($fullPath);
         $this->assertNotNull(Arquivo::findById($arquivo->id));
 

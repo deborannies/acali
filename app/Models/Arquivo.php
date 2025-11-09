@@ -6,6 +6,13 @@ use Core\Database\ActiveRecord\BelongsTo;
 use Core\Database\ActiveRecord\Model;
 use App\Models\Project;
 
+/**
+ * @property int $project_id
+ * @property string $path_arquivo
+ * @property string $nome_original
+ * @property string $mime_type
+ * @property-read Project $project
+ */
 class Arquivo extends Model
 {
     private const PUBLIC_PATH = __DIR__ . '/../../public';
@@ -27,7 +34,7 @@ class Arquivo extends Model
     public function deleteFileFromFilesystem(): bool
     {
         $fullPath = self::PUBLIC_PATH . '/' . $this->path_arquivo;
-        
+
         if (file_exists($fullPath)) {
             return unlink($fullPath);
         }
