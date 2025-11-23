@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Core\Database\ActiveRecord\HasMany;
 use Core\Database\ActiveRecord\BelongsTo;
+use Core\Database\ActiveRecord\BelongsToMany;
 use Core\Database\ActiveRecord\Model;
 use App\Models\Arquivo;
 use App\Models\User;
@@ -37,6 +38,11 @@ class Project extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function team(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
     }
 
     public function deleteAssociatedFiles(): void

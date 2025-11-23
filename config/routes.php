@@ -2,7 +2,7 @@
 
 use App\Controllers\ProjectsController;
 use App\Controllers\AuthenticationsController;
-use App\Controllers\ArquivosController; // <-- ADICIONADO
+use App\Controllers\ArquivosController;
 use Core\Router\Route;
 
 // Create
@@ -21,19 +21,23 @@ Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('proje
 // Delete
 Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
 
-// Rota para processar o UPLOAD (Item 3.2)
+// Processar o UPLOAD
 Route::post('/projects/{id}/upload', [ArquivosController::class, 'store'])->name('arquivos.store');
 
-// Rota para DELETAR um arquivo (Item 3.3)
+// DELETAR um arquiVO
 Route::delete('/arquivos/{id}', [ArquivosController::class, 'destroy'])->name('arquivos.destroy');
 
+// Adicionar membro
+Route::post('/projects/{id}/members', [ProjectsController::class, 'addMember'])->name('projects.addMember');
 
-// Authentication
-// Rota para MOSTRAR o formulário de login
+// Remover membro
+Route::delete('/projects/{id}/members', [ProjectsController::class, 'removeMember'])->name('projects.removeMember');
+
+// MOSTRAR o formulário de login
 Route::get('/login', [AuthenticationsController::class, 'new'])->name('login.form');
 
-// Rota para PROCESSAR a tentativa de login
+// PROCESSAR a tentativa de login
 Route::post('/login', [AuthenticationsController::class, 'authenticate'])->name('login.authenticate');
 
-// Rota para SAIR do sistema (logout)
+// SAIR do sistema (logout)
 Route::get('/logout', [AuthenticationsController::class, 'destroy'])->name('logout');
