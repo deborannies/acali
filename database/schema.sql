@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS `arquivos`;
+DROP TABLE IF EXISTS `project_user`;
 DROP TABLE IF EXISTS `projects`;
 DROP TABLE IF EXISTS `users`;
 
@@ -35,4 +36,16 @@ CREATE TABLE `arquivos` (
     FOREIGN KEY (`project_id`)
         REFERENCES `projects`(`id`)
         ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabela Pivô para Projetos <-> Usuários (NxN)
+CREATE TABLE `project_user` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `project_id` INT NOT NULL,
+    `user_id` INT NOT NULL,
+    
+    FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    
+    UNIQUE KEY `unique_project_user` (`project_id`, `user_id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

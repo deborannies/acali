@@ -7,4 +7,7 @@ parameters:
         - tests
     
     excludePaths:
-    - app/views/*
+        - app/views/*
+
+    bootstrapFiles:
+        - phpstan-bootstrap.php

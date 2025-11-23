@@ -80,4 +80,41 @@ class BelongsToMany
 
         return $rows[0]['total'];
     }
+
+    /**
+     * @param int $relatedId
+     */
+    public function attach(int $relatedId): void
+    {
+        $sql = <<<SQL
+            INSERT INTO {$this->pivot_table} 
+            ({$this->from_foreign_key}, {$this->to_foreign_key}) 
+            VALUES (:from_id, :to_id)
+        SQL;
+
+        $pdo = Database::getDatabaseConn();
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':from_id', $this->model->id);
+        $stmt->bindValue(':to_id', $relatedId);
+        
+        $stmt->execute();
+    }
+
+    /**
+     * @param int $relatedId
+     */
+    public function detach(int $relatedId): void
+    {
+        $sql = <<<SQL
+            DELETE FROM {$this->pivot_table} 
+            WHERE {$this->from_foreign_key} = :from_id 
+            AND {$this->to_foreign_key} = :to_id
+        SQL;
+
+        $pdo = Database::getDatabaseConn();
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':from_id', $this->model->id);
+        $stmt->bindValue(':to_id', $relatedId);
+        $stmt->execute();
+    }
 }

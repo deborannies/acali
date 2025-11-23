@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Project;
 use App\Models\Arquivo;
+use App\Models\User;
 use Core\Http\Request;
 use Lib\Paginator;
 use Lib\FlashMessage;
@@ -39,9 +40,13 @@ class ProjectsController extends BaseController
 
         $arquivos = $project->arquivos;
 
+        $teamMembers = $project->team()->get();
+
+        $allUsers = User::all();
+
         $title = "Visualização do Projeto #{$project->id}";
 
-        $this->render('projects/show', compact('project', 'title', 'arquivos'));
+        $this->render('projects/show', compact('project', 'title', 'arquivos', 'teamMembers', 'allUsers'));
     }
 
     public function new(Request $request): void
@@ -117,5 +122,45 @@ class ProjectsController extends BaseController
             FlashMessage::success('Projeto removido com sucesso.');
         }
         $this->redirectToRoute('projects.index');
+    }
+
+    public function addMember(Request $request): void
+    {
+        $this->authenticated();
+        $params = $request->getParams();
+
+        $projectId = (int)$params['id'];
+        $userIdToAdd = (int)$params['user_id'];
+
+        $project = Project::findById($projectId);
+
+        if ($project && $userIdToAdd) {
+            try {
+                $project->team()->attach($userIdToAdd);
+                FlashMessage::success('Membro adicionado à equipe!');
+            } catch (\Exception $e) {
+                FlashMessage::danger('Erro: Este usuário já faz parte da equipe.');
+            }
+        }
+
+        $this->redirectToRoute('projects.show', ['id' => $projectId]);
+    }
+
+    public function removeMember(Request $request): void
+    {
+        $this->authenticated();
+        $params = $request->getParams();
+
+        $projectId = (int)$params['id'];
+        $userIdToRemove = (int)$params['user_id'];
+
+        $project = Project::findById($projectId);
+
+        if ($project && $userIdToRemove) {
+            $project->team()->detach($userIdToRemove);
+            FlashMessage::success('Membro removido da equipe.');
+        }
+
+        $this->redirectToRoute('projects.show', ['id' => $projectId]);
     }
 }
