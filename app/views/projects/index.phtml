@@ -15,10 +15,25 @@ $isAdmin = $this->currentUser && $this->currentUser->role === 'admin';
                             <?= htmlspecialchars($project->title) ?>
                         </h5>
                     </a>
+                    
+                    <div class="mt-2" style="position: relative; z-index: 1;">
+                        <span id="status-badge-<?= $project->id ?>" 
+                              class="badge rounded-pill <?= $project->status == 'finished' ? 'bg-success' : 'bg-secondary' ?>">
+                            <?= $project->status == 'finished' ? 'Concluído' : 'Em Andamento' ?>
+                        </span>
+                    </div>
 
                     <?php if ($isAdmin) : ?>
                         <div class="mt-3" style="position: relative; z-index: 1;">
-    
+                            
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-primary mb-2 btn-toggle-status"
+                                    data-id="<?= $project->id ?>"
+                                    data-url="<?= route('projects.toggleStatus', ['id' => $project->id]) ?>">
+                                <i class="bi bi-arrow-repeat"></i> Alterar Status
+                            </button>
+                            <br>
+
                             <a href="<?= route('projects.edit', ['id' => $project->id]) ?>" class="card-link text-decoration-none small">
                                 <i class="bi bi-pencil-square"></i> Editar
                             </a>

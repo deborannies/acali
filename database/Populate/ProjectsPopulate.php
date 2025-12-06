@@ -12,7 +12,7 @@ class ProjectsPopulate
         $adminUser = User::findBy(['email' => 'admin@teste.com']);
         
         if (!$adminUser) {
-            echo "❌ Erro: Usuário 'admin@teste.com' não encontrado para associar projetos.\n";
+            echo "❌ Erro: Usuário 'admin@teste.com' não encontrado.\n";
             return;
         }
 
@@ -22,22 +22,18 @@ class ProjectsPopulate
             'CRUD Virtualizado',
             'Críticas de Filmes',
             'Portal de Notícias Internas',
-            'Sistema de Biblioteca',
-            'Ferramenta de E-commerce',
-            'Blog de Tecnologia',
-            'Gerenciador de Tarefas (Kanban)',
-            'Sistema de Votação Online',
             'API de Clima',
         ];
 
         foreach ($projects as $title) {
             $project = new Project([
-                'title' => $title,
-                'user_id' => $adminUser->id
+                'title'   => $title,
+                'user_id' => $adminUser->id,
+                'status'  => 'open' 
             ]);
             $project->save();
         }
 
-        echo "✅ Projetos de teste criados com sucesso!\n";
+        echo "✅ Projetos criados com sucesso!\n";
     }
 }

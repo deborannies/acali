@@ -11,14 +11,15 @@ use App\Models\User;
 
 /**
  * @property string $title
+ * @property string $status
  * @property int $user_id
- * @property-read array<Arquivo> $arquivos
  * @property-read User $user
+ * @property-read array<Arquivo> $arquivos
  */
 class Project extends Model
 {
     protected static string $table = 'projects';
-    protected static array $columns = ['title', 'user_id'];
+    protected static array $columns = ['title', 'user_id', 'status'];
 
     public function validates(): void
     {
