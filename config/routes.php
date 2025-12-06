@@ -21,23 +21,18 @@ Route::put('/projects/{id}', [ProjectsController::class, 'update'])->name('proje
 // Delete
 Route::delete('/projects/{id}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
 
-// Processar o UPLOAD
-Route::post('/projects/{id}/upload', [ArquivosController::class, 'store'])->name('arquivos.store');
+// Ajax
+Route::post('/projects/{id}/toggle-status', [ProjectsController::class, 'toggleStatus'])->name('projects.toggleStatus');
 
-// DELETAR um arquiVO
+// Upload e Arquivos
+Route::post('/projects/{id}/upload', [ArquivosController::class, 'store'])->name('arquivos.store');
 Route::delete('/arquivos/{id}', [ArquivosController::class, 'destroy'])->name('arquivos.destroy');
 
-// Adicionar membro
+// Membros (NxN)
 Route::post('/projects/{id}/members', [ProjectsController::class, 'addMember'])->name('projects.addMember');
-
-// Remover membro
 Route::delete('/projects/{id}/members', [ProjectsController::class, 'removeMember'])->name('projects.removeMember');
 
-// MOSTRAR o formulário de login
+// Autenticação
 Route::get('/login', [AuthenticationsController::class, 'new'])->name('login.form');
-
-// PROCESSAR a tentativa de login
 Route::post('/login', [AuthenticationsController::class, 'authenticate'])->name('login.authenticate');
-
-// SAIR do sistema (logout)
 Route::get('/logout', [AuthenticationsController::class, 'destroy'])->name('logout');

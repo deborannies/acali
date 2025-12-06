@@ -39,9 +39,7 @@ class ProjectsController extends BaseController
         }
 
         $arquivos = $project->arquivos;
-
         $teamMembers = $project->team()->get();
-
         $allUsers = User::all();
 
         $title = "Visualização do Projeto #{$project->id}";
@@ -162,5 +160,37 @@ class ProjectsController extends BaseController
         }
 
         $this->redirectToRoute('projects.show', ['id' => $projectId]);
+    }
+
+    public function toggleStatus(Request $request): void
+    {
+        $this->authenticated();
+
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        $params = $request->getParams();
+        $id = (int)$params['id'];
+
+        $project = Project::findById($id);
+
+        if (!$project) {
+            $this->renderJson(['success' => false, 'message' => 'Projeto não encontrado'], 404);
+            return;
+        }
+
+        $newStatus = ($project->status === 'finished') ? 'open' : 'finished';
+        $project->status = $newStatus;
+
+        if ($project->save()) {
+            $this->renderJson([
+                'success' => true,
+                'new_status' => $newStatus,
+                'label' => ($newStatus === 'finished') ? 'Concluído' : 'Em Andamento',
+                'message' => 'Status atualizado com sucesso!'
+            ]);
+        } else {
+            $this->renderJson(['success' => false, 'message' => 'Erro ao salvar no banco'], 500);
+        }
     }
 }

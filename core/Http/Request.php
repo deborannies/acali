@@ -4,41 +4,58 @@ namespace Core\Http;
 
 class Request
 {
-    private string $method;
-    private string $uri;
     /** @var array<string, mixed> */
     private array $params;
-    /** @var array<string, string> */
-    private array $headers;
 
-    public function __construct()
+    /**
+     * @param array<string, mixed> $params
+     */
+    public function __construct(array $params = [])
     {
-        $this->method = $_REQUEST['_method'] ?? $_SERVER['REQUEST_METHOD'] ?? '';
-        $this->uri = $_SERVER['REQUEST_URI'] ?? '/';
-        $this->params = $_REQUEST;
-        $this->headers = function_exists('getallheaders') ? \getallheaders() : [];
+        if (!empty($params)) {
+            $this->params = $params;
+        } else {
+            $json = json_decode(file_get_contents('php://input'), true) ?? [];
+            $this->params = array_merge($_GET, $_POST, (array)$json);
+        }
     }
 
     public function getMethod(): string
     {
-        return $this->method;
+        return $_SERVER['REQUEST_METHOD'] ?? 'GET';
     }
 
     public function getUri(): string
     {
-        return $this->uri;
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        return strtok($uri, '?');
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        if (function_exists('getallheaders')) {
+            return getallheaders();
+        }
+        return [];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     public function getParams(): array
     {
         return $this->params;
     }
 
-    /** @return array<string, string> */
-    public function getHeaders(): array
+    public function getParam(string $param): mixed
     {
-        return $this->headers;
+        if (isset($this->params[$param])) {
+            return $this->params[$param];
+        }
+        return null;
     }
 
     /**
